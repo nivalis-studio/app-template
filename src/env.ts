@@ -6,6 +6,8 @@ import type { util } from 'zod/v4/core';
 // ⚠️ don't forget to also put them in turbo.json
 
 const serverSchema = z.object({
+  DATABASE_URL: z.string(),
+
   VERCEL: z.string().optional(),
   CI: z.string().optional(),
   VERCEL_ENV: z.enum(['development', 'preview', 'production']).optional(),

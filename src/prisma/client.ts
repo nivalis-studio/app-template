@@ -1,6 +1,11 @@
+import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@/prisma/client/client';
+import { ENV } from '@/env';
 
-const prismaClientSingleton = () => new PrismaClient();
+const connectionString = ENV.DATABASE_URL;
+const adapter = new PrismaNeon({ connectionString });
+
+const prismaClientSingleton = () => new PrismaClient({ adapter });
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
 

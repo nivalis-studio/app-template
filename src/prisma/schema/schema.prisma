@@ -2,6 +2,7 @@ generator client {
   provider     = "prisma-client"
   output       = "../client"
   moduleFormat = "esm"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource postgresql {
