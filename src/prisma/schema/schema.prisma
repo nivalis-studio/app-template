@@ -1,13 +1,10 @@
 generator client {
-  provider = "prisma-client"
-  output   = "client"
+  provider     = "prisma-client"
+  output       = "../client"
+  moduleFormat = "esm"
 }
 
 datasource postgresql {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model Temp {
-  id Int @id @default(autoincrement())
 }

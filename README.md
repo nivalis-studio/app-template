@@ -5,3 +5,9 @@
 ```bash
 pnpm create next-app --example https://github.com/nivalis-studio/app-template
 ```
+
+### Create a new neon database
+
+```bash
+bunx neondb --yes
+```
