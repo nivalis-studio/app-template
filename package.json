@@ -19,6 +19,9 @@
     "ts": "tsc"
   },
   "dependencies": {
+    "@medusajs/icons": "2.8.8",
+    "@medusajs/ui": "4.0.18",
+    "@medusajs/ui-preset": "2.8.8",
     "@nivalis/std": "2.0.0",
     "@prisma/client": "6.13.0",
     "class-variance-authority": "0.7.1",
