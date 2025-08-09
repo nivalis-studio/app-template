@@ -1,7 +1,7 @@
-## Nivalis Studio nextjs template
+## @nivalis/app-template
 
 ### Install
 
 ```bash
-pnpm create next-app --example https://github.com/nivalis-studio/nextjs-template
+pnpm create next-app --example https://github.com/nivalis-studio/app-template
 ```
