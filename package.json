@@ -1,0 +1,57 @@
+{
+  "name": "@nivalis/template",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
+  "engines": {
+    "node": "22.x",
+    "pnpm": "9.x"
+  },
+  "scripts": {
+    "dev": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next dev --turbopack",
+    "build": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next build",
+    "start": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next start",
+    "lint": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next lint",
+    "lint:fix": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next lint --fix",
+    "prepare": "pnpm dlx lefthook install",
+    "ts": "tsc"
+  },
+  "dependencies": {
+    "@nivalis/std": "2.0.0",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "0.539.0",
+    "next": "15.4.6",
+    "postcss": "8.5.6",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "server-only": "0.0.1",
+    "tailwind-merge": "3.3.1",
+    "turbo": "2.5.5",
+    "zod": "4.0.16"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
+    "@nivalis/eslint-config": "5.5.1",
+    "@nivalis/prettier-config": "3.6.2",
+    "@tailwindcss/postcss": "4.1.11",
+    "@total-typescript/ts-reset": "0.6.1",
+    "@types/node": "24.2.0",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
+    "eslint": "9.33.0",
+    "lefthook": "1.12.2",
+    "lint-staged": "16.1.5",
+    "prettier": "3.6.2",
+    "prettier-oxc-parser": "0.2.0",
+    "prettier-plugin-tailwindcss": "0.6.14",
+    "tailwindcss": "4.1.11",
+    "tailwindcss-animate": "1.0.7",
+    "typescript": "5.9.2"
+  },
+  "lint-staged": {
+    "*": "eslint --quiet --fix"
+  }
+}

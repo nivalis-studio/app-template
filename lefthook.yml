@@ -1,0 +1,8 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm commitlint --edit
+pre-commit:
+  commands:
+    lint:
+      run: pnpm lint-staged
