@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   eslint: {
-    dirs: ['.'],
     ignoreDuringBuilds: true,
   },
   experimental: {

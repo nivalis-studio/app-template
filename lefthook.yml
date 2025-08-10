@@ -3,6 +3,14 @@ commit-msg:
     commitlint:
       run: pnpm commitlint --edit
 pre-commit:
-  commands:
-    lint:
-      run: pnpm lint-staged
+  jobs:
+    - run: pnpm ultracite format
+      glob:
+        - "*.js"
+        - "*.jsx"
+        - "*.ts"
+        - "*.tsx"
+        - "*.json"
+        - "*.jsonc"
+        - "*.css"
+      stage_fixed: true

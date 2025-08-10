@@ -1,5 +1,5 @@
-import { z } from 'zod/v4';
 import type { ZodSafeParseResult } from 'zod/v4';
+import { z } from 'zod/v4';
 import type { util } from 'zod/v4/core';
 
 // WARN: when adding env variables here
@@ -70,7 +70,7 @@ const parsed = (
 if (!parsed.success) {
   console.error(
     '❌ Invalid environment variables:',
-    z.treeifyError(parsed.error),
+    z.treeifyError(parsed.error)
   );
 
   throw new Error('Invalid environment variables');

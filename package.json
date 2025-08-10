@@ -12,8 +12,8 @@
     "dev": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next dev --turbopack",
     "build": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next build --turbopack",
     "start": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next start",
-    "lint": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next lint",
-    "lint:fix": "NEXT_TELEMETRY_DISABLED=1 NODE_NO_WARNINGS=1 next lint --fix",
+    "lint": "ultracite format",
+    "lint:fix": "ultracite format --unsafe",
     "postinstall": "prisma generate --no-hints",
     "prepare": "pnpm dlx lefthook install",
     "ts": "tsc"
@@ -23,7 +23,6 @@
     "@medusajs/icons": "2.8.8",
     "@medusajs/ui": "4.0.18",
     "@medusajs/ui-preset": "2.8.8",
-    "@nivalis/std": "2.0.0",
     "@prisma/adapter-neon": "^6.13.0",
     "@prisma/client": "6.13.0",
     "ai": "5.0.8",
@@ -42,26 +41,19 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.1.2",
     "@commitlint/cli": "19.8.1",
     "@commitlint/config-conventional": "19.8.1",
-    "@nivalis/eslint-config": "5.5.1",
-    "@nivalis/prettier-config": "3.6.2",
     "@tailwindcss/postcss": "4.1.11",
     "@total-typescript/ts-reset": "0.6.1",
     "@types/node": "24.2.0",
     "@types/react": "19.1.9",
     "@types/react-dom": "19.1.7",
-    "eslint": "9.33.0",
     "lefthook": "1.12.2",
     "lint-staged": "16.1.5",
-    "prettier": "3.6.2",
-    "prettier-oxc-parser": "0.2.0",
-    "prettier-plugin-tailwindcss": "0.6.14",
     "tailwindcss": "4.1.11",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "5.9.2"
-  },
-  "lint-staged": {
-    "*": "eslint --quiet --fix"
+    "typescript": "5.9.2",
+    "ultracite": "5.1.2"
   }
 }

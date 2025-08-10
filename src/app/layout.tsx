@@ -1,8 +1,8 @@
 import '@/styles/globals.css';
-import { fonts } from '@/fonts';
-import { cn } from '@/lib/classnames';
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
+import { fonts } from '@/fonts';
+import { cn } from '@/lib/classnames';
 
 export const metadata: Metadata = {
   title: { default: 'Create Next App', template: '%s | Create Next App' },
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang='en' className={cn('dark font-mono', fonts)}>
-      <body className='isolate'>{children}</body>
+    <html className={cn('dark font-mono', fonts)} lang="en">
+      <body className="isolate">{children}</body>
     </html>
   );
 };
