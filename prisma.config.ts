@@ -1,4 +1,7 @@
+import { config } from 'dotenv';
 import type { PrismaConfig } from 'prisma';
+
+config();
 
 export default {
   schema: 'src/prisma/schema',

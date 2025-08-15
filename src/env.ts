@@ -1,6 +1,9 @@
+import { config } from 'dotenv';
 import type { ZodSafeParseResult } from 'zod/v4';
 import { z } from 'zod/v4';
 import type { util } from 'zod/v4/core';
+
+config();
 
 // WARN: when adding env variables here
 // ⚠️ don't forget to also put them in turbo.json
