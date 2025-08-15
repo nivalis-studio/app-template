@@ -6,6 +6,7 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   presets: [medusa],
+  darkMode: 'class',
 } satisfies Config;
 
 export default config;
