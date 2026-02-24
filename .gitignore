@@ -113,8 +113,6 @@ jspm_packages/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
-# TypeScript cache
-
 # Optional npm cache directory
 .npm
 
@@ -199,8 +197,6 @@ dist
 # Serverless Webpack directories
 .webpack/
 
-# Optional stylelint cache
-
 # SvelteKit build / generate output
 .svelte-kit
 
@@ -222,6 +218,7 @@ sketch
 .turbo
 
 ### Vercel ###
+.vercel
 
 ### Miscellaneous ###
 *.pem

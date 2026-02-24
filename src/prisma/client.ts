@@ -19,4 +19,5 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
+// biome-ignore lint/performance/noBarrelFile: yay yay yay
 export * from '@/prisma/client/client';

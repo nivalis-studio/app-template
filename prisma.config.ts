@@ -1,11 +1,10 @@
-import { config } from 'dotenv';
-import type { PrismaConfig } from 'prisma';
+import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
 
-config();
-
-export default {
+export default defineConfig({
   schema: 'src/prisma/schema',
   migrations: { path: 'src/prisma/migrations' },
   views: { path: 'src/prisma/views' },
   typedSql: { path: 'src/prisma/queries' },
-} satisfies PrismaConfig;
+  datasource: { url: env('DATABASE_URL') },
+});

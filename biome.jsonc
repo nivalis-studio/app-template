@@ -1,19 +1,4 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
-  "extends": ["ultracite"],
-  "linter": {
-    "rules": {
-      "suspicious": {
-        "noConsole": {
-          "level": "off",
-          "options": {
-            "allow": ["warn", "assert", "error"]
-          }
-        }
-      },
-      "nursery": {
-        "noUnknownAtRule": "off"
-      }
-    }
-  }
+	"$schema": "https://biomejs.dev/schemas/2.4.3/schema.json",
+	"extends": ["@nivalis/biome-config"]
 }
