@@ -16,15 +16,15 @@
 		"noUncheckedIndexedAccess": true,
 		"jsx": "react-jsx",
 		"incremental": true,
+		"types": ["node"],
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./src/*"]
 		},
 		"plugins": [
 			{
 				"name": "next"
 			}
 		],
-		"baseUrl": "./src",
 		"strictNullChecks": true
 	},
 	"include": [
