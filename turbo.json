@@ -2,6 +2,10 @@
 	"$schema": "https://turborepo.com/schema.json",
 	"globalPassThroughEnv": ["COREPACK_HOME", "ENABLE_EXPERIMENTAL_COREPACK"],
 	"tasks": {
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
 		"build": {
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"dependsOn": ["^build"],
@@ -12,6 +16,17 @@
 				"BETTER_AUTH_SECRET"
 			],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+		},
+		"lint": {
+			"dependsOn": ["^lint"]
+		},
+		"lint:fix": {
+			"cache": false,
+			"dependsOn": ["^lint:fix"]
+		},
+		"ts": {
+			"dependsOn": ["^ts"],
+			"outputs": [".next/types/**", "!.next/cache/**", "tsconfig.tsbuildinfo"]
 		}
 	}
 }

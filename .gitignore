@@ -224,4 +224,4 @@ sketch
 *.pem
 
 ### Prisma ###
-/src/prisma/client/
+/apps/web/src/prisma/client/
