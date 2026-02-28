@@ -3,7 +3,7 @@
 	"type": "module",
 	"version": "0.1.0",
 	"private": true,
-	"packageManager": "pnpm@10.30.2",
+	"packageManager": "pnpm@10.30.3",
 	"engines": {
 		"node": "24.x",
 		"pnpm": "10.x"
@@ -24,12 +24,14 @@
 		"@prisma/client": "catalog:",
 		"@vercel/analytics": "catalog:",
 		"@vercel/config": "catalog:",
+		"@vercel/queue": "catalog:",
 		"ai": "catalog:",
 		"babel-plugin-react-compiler": "catalog:",
 		"better-auth": "catalog:",
 		"class-variance-authority": "catalog:",
 		"clsx": "catalog:",
 		"dotenv": "catalog:",
+		"effect": "catalog:",
 		"lucide-react": "catalog:",
 		"next": "catalog:",
 		"postcss": "catalog:",
@@ -44,6 +46,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",
+		"@effect/language-service": "catalog:",
 		"@nivalis/biome-config": "catalog:",
 		"@tailwindcss/postcss": "catalog:",
 		"@total-typescript/ts-reset": "catalog:",

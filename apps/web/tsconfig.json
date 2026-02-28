@@ -23,6 +23,12 @@
 		"plugins": [
 			{
 				"name": "next"
+			},
+			{
+				"name": "workflow"
+			},
+			{
+				"name": "@effect/language-service"
 			}
 		],
 		"strictNullChecks": true

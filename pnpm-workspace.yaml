@@ -3,32 +3,35 @@ packages:
   - packages/*
 
 catalog:
-  "@ai-sdk/openai": 3.0.31
-  "@ai-sdk/react": 3.0.99
+  "@ai-sdk/openai": 3.0.37
+  "@ai-sdk/react": 3.0.107
   "@base-ui/react": 1.2.0
   "@biomejs/biome": 2.4.4
   "@commitlint/cli": 20.4.2
   "@commitlint/config-conventional": 20.4.2
+  "@effect/language-service": 0.77.0
   "@nivalis/biome-config": 2.4.4
-  "@prisma/adapter-neon": 7.4.1
-  "@prisma/client": 7.4.1
+  "@prisma/adapter-neon": 7.4.2
+  "@prisma/client": 7.4.2
   "@tailwindcss/postcss": 4.2.1
   "@total-typescript/ts-reset": 0.6.1
   "@types/node": 22.18.13
   "@types/react": 19.2.14
   "@types/react-dom": 19.2.3
   "@vercel/analytics": 1.6.1
+  "@vercel/queue": 0.1.3
   "@vercel/blob": 2.3.0
-  "@vercel/config": 0.0.33
-  ai: 6.0.97
+  "@vercel/config": 0.0.36
+  ai: 6.0.105
   babel-plugin-react-compiler: 1.0.0
-  better-auth: 1.4.19
-  chat: 4.14.0
+  better-auth: 1.5.0
+  chat: 4.15.0
   class-variance-authority: 0.7.1
   clsx: 2.1.1
   cmdk: 1.1.1
   date-fns: 4.1.0
   dotenv: 17.3.1
+  effect: 3.19.19
   embla-carousel-react: 8.6.0
   input-otp: 1.4.2
   lefthook: 2.1.1
@@ -36,18 +39,18 @@ catalog:
   next: 16.1.6
   next-themes: 0.4.6
   postcss: 8.5.6
-  prisma: 7.4.1
+  prisma: 7.4.2
   react: 19.2.4
-  react-day-picker: 9.13.2
+  react-day-picker: 9.14.0
   react-dom: 19.2.4
-  react-resizable-panels: 4.6.5
+  react-resizable-panels: 4.7.0
   recharts: 3.7.0
   schema-dts: 1.1.5
   server-only: 0.0.1
   sonner: 2.0.7
   tailwind-merge: 3.5.0
   tailwindcss: 4.2.1
-  turbo: 2.8.10
+  turbo: 2.8.12
   typescript: 5.9.3
   vaul: 1.1.2
   workflow: 4.1.0-beta.60
