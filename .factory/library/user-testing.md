@@ -39,3 +39,24 @@ Testing surface, tools, URLs, setup steps, and known quirks.
 - Neon DB credentials in .env may expire (check DATE_URL comment)
 - BETTER_AUTH_SECRET must be set or app crashes on startup
 - AI chat requires OPENAI_API_KEY to actually generate responses
+
+## Flow Validator Guidance: Foundation Infrastructure
+
+Foundation milestone assertions are all code/infrastructure checks — no browser testing needed.
+
+### Isolation Rules
+- Subagents are read-only: they inspect files, run builds/tests, and check configurations
+- No shared mutable state — each subagent checks different aspects of the codebase
+- Dev server is already running on port 3000 (for VAL-CROSS-001 healthcheck)
+- Do NOT restart the dev server or modify any source files during validation
+
+### Testing Approach
+- Use file reads (Read, Grep tools) to verify file existence and content
+- Use shell commands (turbo build, turbo test, turbo ts, turbo lint) for build verification
+- Use curl for healthcheck assertions (VAL-CROSS-001)
+- All assertions are verifiable through deterministic commands — no flaky tests
+
+### Build Environment
+- BETTER_AUTH_SECRET=dev-secret must be set for any build/dev commands
+- DATABASE_URL needs placeholder for build: postgresql://placeholder:placeholder@localhost/placeholder
+- Run turbo commands from repo root: /Users/pnodet/git/nivalis/app-template

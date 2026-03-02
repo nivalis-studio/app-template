@@ -1,0 +1,47 @@
+{
+	"groupId": "sentry-monitoring",
+	"testedAt": "2026-03-03T00:20:00.000Z",
+	"credentials": {
+		"account": "N/A",
+		"namespace": "N/A"
+	},
+	"toolsUsed": ["Read", "Grep", "Glob"],
+	"assertions": {
+		"VAL-FOUND-010": {
+			"status": "pass",
+			"evidence": {
+				"sentryPackage": "@sentry/nextjs listed in apps/web/package.json dependencies (catalog: protocol)",
+				"configFiles": {
+					"instrumentation": "apps/web/instrumentation.ts — imports captureRequestError from @sentry/nextjs; register() dynamically imports sentry.server.config for nodejs runtime and sentry.edge.config for edge runtime; exports onRequestError = captureRequestError",
+					"clientConfig": "apps/web/instrumentation-client.ts — calls Sentry init() with NEXT_PUBLIC_SENTRY_DSN, configures tracesSampleRate, replayIntegration, and enableLogs; exports onRouterTransitionStart = captureRouterTransitionStart",
+					"serverConfig": "apps/web/sentry.server.config.ts — calls Sentry init() with SENTRY_DSN ?? NEXT_PUBLIC_SENTRY_DSN, configures tracesSampleRate and enableLogs",
+					"edgeConfig": "apps/web/sentry.edge.config.ts — calls Sentry init() with SENTRY_DSN ?? NEXT_PUBLIC_SENTRY_DSN, configures tracesSampleRate and enableLogs",
+					"globalError": "apps/web/src/app/global-error.tsx — client component that calls captureException(error) in useEffect and renders NextError"
+				},
+				"nextConfig": "apps/web/next.config.ts — imports withSentryConfig from @sentry/nextjs and wraps nextConfig: export default withSentryConfig(nextConfig, { silent, authToken, widenClientFileUpload, tunnelRoute: '/monitoring', bundleSizeOptimizations })"
+			},
+			"issues": []
+		},
+		"VAL-FOUND-011": {
+			"status": "pass",
+			"evidence": {
+				"envSchema": {
+					"serverSchema": "apps/web/src/env.ts — serverSchema includes SENTRY_DSN: z.string().url().optional()",
+					"clientSchema": "apps/web/src/env.ts — clientSchema includes NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional()",
+					"processEnvMapping": "processEnv object maps SENTRY_DSN from process.env.SENTRY_DSN and NEXT_PUBLIC_SENTRY_DSN from process.env.NEXT_PUBLIC_SENTRY_DSN"
+				},
+				"configFilesUseEnvVar": {
+					"serverConfig": "sentry.server.config.ts reads DSN via process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN — no hardcoded string",
+					"edgeConfig": "sentry.edge.config.ts reads DSN via process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN — no hardcoded string",
+					"clientConfig": "instrumentation-client.ts reads DSN via process.env.NEXT_PUBLIC_SENTRY_DSN — no hardcoded string",
+					"nextConfig": "next.config.ts reads authToken via process.env.SENTRY_AUTH_TOKEN — no hardcoded credentials"
+				},
+				"noHardcodedDSN": "Grep for '@sentry' across apps/web shows all DSN references use process.env — zero hardcoded DSN strings found"
+			},
+			"issues": []
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 2 assertions: 2 passed. VAL-FOUND-010: @sentry/nextjs is properly installed and configured with instrumentation.ts, instrumentation-client.ts (modern Next.js 16 pattern replacing sentry.client.config.ts), sentry.server.config.ts, sentry.edge.config.ts, global-error.tsx, and next.config.ts wraps with withSentryConfig. VAL-FOUND-011: Sentry DSN is read exclusively from environment variables (SENTRY_DSN and NEXT_PUBLIC_SENTRY_DSN) in all config files, both variables are declared in the Zod env validation schema with url() validation."
+}

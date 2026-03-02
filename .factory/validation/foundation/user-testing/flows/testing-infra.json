@@ -1,0 +1,25 @@
+{
+	"groupId": "testing-infra",
+	"testedAt": "2026-03-03T00:15:30Z",
+	"assertions": {
+		"VAL-FOUND-008": {
+			"status": "pass",
+			"evidence": "vitest is in root devDependencies (package.json: \"vitest\": \"catalog:\"). vitest.workspace.ts exists at repo root defining workspaces ['packages/utils', 'packages/ai', 'apps/web']. Running `pnpm turbo test` executed Vitest v4.0.18 across all 3 workspace packages and exited with code 0. Turbo reported: 5 tasks successful, 5 total.",
+			"issues": []
+		},
+		"VAL-FOUND-009": {
+			"status": "pass",
+			"evidence": "packages/utils contains 3 test files: src/__tests__/errors.test.ts (5 tests), src/__tests__/runtime.test.ts (3 tests), src/__tests__/layers.test.ts (4 tests). All 12 tests passed. turbo test output: '@nivalis/utils:test: Test Files 3 passed (3), Tests 12 passed (12)'.",
+			"issues": []
+		},
+		"VAL-FOUND-017": {
+			"status": "pass",
+			"evidence": "turbo.json contains a \"test\" task in the tasks object with configuration: {\"cache\": false, \"dependsOn\": [\"^build\"]}. Running `pnpm turbo test` successfully resolved and executed Vitest in all 3 workspace packages (scope: @nivalis/ai, @nivalis/utils, @nivalis/web). Exit code 0.",
+			"issues": []
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"toolsUsed": ["Read", "Grep", "Glob", "Execute"],
+	"summary": "Tested 3 assertions: 3 passed. Vitest v4.0.18 is configured in devDependencies and runnable via turbo test (VAL-FOUND-008). @nivalis/utils has 3 test files with 12 passing tests (VAL-FOUND-009). turbo.json defines a test task that successfully orchestrates test execution (VAL-FOUND-017)."
+}

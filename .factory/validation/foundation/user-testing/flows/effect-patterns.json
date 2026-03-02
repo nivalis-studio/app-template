@@ -1,0 +1,36 @@
+{
+	"groupId": "effect-patterns",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "N/A",
+		"namespace": "N/A"
+	},
+	"toolsUsed": ["Read", "Grep", "Execute"],
+	"assertions": {
+		"VAL-FOUND-005": {
+			"status": "pass",
+			"evidence": "grep for Effect patterns (Effect.gen, Context.GenericTag, Layer.succeed, Layer.effect, Layer.mergeAll, Data.TaggedError) returned 30+ matches across packages/utils/src/. Key files: layers.ts exports makeServiceLayer (wraps Layer.succeed), makeEffectServiceLayer (wraps Layer.effect), composeLayers (wraps Layer.mergeAll). errors.ts defines 4 typed error classes via Data.TaggedError. runtime.ts provides makeRuntime using ManagedRuntime. Effect is the architectural backbone for service composition, not just installed.",
+			"issues": []
+		},
+		"VAL-FOUND-006": {
+			"status": "pass",
+			"evidence": "composeLayers (exported from packages/utils/src/layers.ts line 82) is an alias for Layer.mergeAll — a Layer combinator that merges multiple service layers into one. Tests in layers.test.ts demonstrate: (1) composeLayers(LoggerLive, CounterLive) merging two independent services into ComposedLive, (2) Layer.provide(FormatterLive, LoggerLive) wiring dependent services. A top-level composed layer pattern is exported and tested.",
+			"issues": []
+		},
+		"VAL-FOUND-007": {
+			"status": "pass",
+			"evidence": "All 4 error classes (NotFoundError, UnauthorizedError, ValidationError, ServiceError) use Data.TaggedError with explicit type parameters. grep for 'Effect<.*unknown' returned zero matches — no service uses unknown in the error channel. makeEffectServiceLayer signature is <Id, S, E, R>(tag, effect): Layer.Layer<Id, E, R> with generic E, not unknown. TypeScript compilation passes with strict mode (tsc --noEmit) across all 3 packages (@nivalis/utils, @nivalis/ai, @nivalis/web) — 0 errors.",
+			"issues": []
+		},
+		"VAL-FOUND-019": {
+			"status": "fail",
+			"evidence": "packages/utils/src/index.ts has 8 named exports: NotFoundError, ServiceError, UnauthorizedError, ValidationError (from errors.ts), composeLayers, makeEffectServiceLayer, makeServiceLayer (from layers.ts), makeRuntime (from runtime.ts). TypeScript compilation passes. However, ALL 8 exports are Effect-related utilities. The package contains zero general-purpose helper functions (no string/array/date/math/object utilities). Only 3 source files exist: errors.ts, layers.ts, runtime.ts — all Effect-specific.",
+			"issues": [
+				"The package exports only Effect-related utilities. The assertion requires 'at least one general-purpose helper function' (non-Effect), but none exist. A general helper (e.g., cn(), debounce, formatDate, deepMerge) needs to be added to satisfy this assertion."
+			]
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 4 assertions: 3 passed (VAL-FOUND-005, VAL-FOUND-006, VAL-FOUND-007), 1 failed (VAL-FOUND-019: missing general-purpose helper — all exports are Effect-specific)."
+}

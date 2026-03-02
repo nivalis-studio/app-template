@@ -1,0 +1,49 @@
+{
+	"groupId": "env-config-build",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "N/A",
+		"namespace": "N/A"
+	},
+	"toolsUsed": ["Read", "Grep", "Execute"],
+	"assertions": {
+		"VAL-FOUND-012": {
+			"status": "pass",
+			"evidence": "Ran `turbo build --force` with DATABASE_URL set but BETTER_AUTH_SECRET missing. Build failed during page data collection with: '❌ Invalid environment variables: { errors: [], properties: { BETTER_AUTH_SECRET: { errors: [Array] } } }' followed by 'Error: Invalid environment variables' at env.ts:92. The error is descriptive and occurs before any request is served.",
+			"issues": []
+		},
+		"VAL-FOUND-013": {
+			"status": "pass",
+			"evidence": "Verified apps/web/src/env.ts serverSchema Zod object contains: OPENAI_API_KEY (z.string().optional()), MISTRAL_API_KEY (z.string().optional()), GOOGLE_GENERATIVE_AI_API_KEY (z.string().optional()), FIRECRAWL_API_KEY (z.string().optional()), GOOGLE_CLIENT_ID (z.string().optional()), GOOGLE_CLIENT_SECRET (z.string().optional()), GOOGLE_REFRESH_TOKEN (z.string().optional()). All AI service API keys and Google OAuth keys are declared as optional with string validation.",
+			"issues": []
+		},
+		"VAL-FOUND-014": {
+			"status": "pass",
+			"evidence": "Ran `BETTER_AUTH_SECRET=dev-secret DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder pnpm turbo ts`. All 3 packages (@nivalis/ai, @nivalis/utils, @nivalis/web) completed successfully with exit code 0. No TypeScript diagnostics reported. Output: 'Tasks: 3 successful, 3 total'.",
+			"issues": []
+		},
+		"VAL-FOUND-015": {
+			"status": "pass",
+			"evidence": "Ran `pnpm turbo lint`. All 3 packages completed successfully with exit code 0. @nivalis/utils: 'Checked 10 files in 1130ms. No fixes applied.' @nivalis/ai: 'Checked 4 files in 1233ms. No fixes applied.' @nivalis/web: 'Checked 35 files in 632ms. No fixes applied.' Output: 'Tasks: 3 successful, 3 total'.",
+			"issues": []
+		},
+		"VAL-FOUND-016": {
+			"status": "pass",
+			"evidence": "Verified turbo.json build task env array contains all required variables: OPENAI_API_KEY, MISTRAL_API_KEY, GOOGLE_GENERATIVE_AI_API_KEY, FIRECRAWL_API_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN. Also includes DATABASE_URL, BETTER_AUTH_SECRET, SENTRY_AUTH_TOKEN, NEXT_PUBLIC_VERCEL_URL, and NODE_ENV.",
+			"issues": []
+		},
+		"VAL-FOUND-018": {
+			"status": "pass",
+			"evidence": "Verified .env.example contains all required variables with placeholder values: DATABASE_URL='postgresql://user:password@host:5432/dbname', BETTER_AUTH_SECRET='your-secret-here', OPENAI_API_KEY='sk-your-openai-key', MISTRAL_API_KEY='your-mistral-key', GOOGLE_GENERATIVE_AI_API_KEY='your-google-ai-key', FIRECRAWL_API_KEY='fc-your-firecrawl-key', GOOGLE_CLIENT_ID='your-google-client-id', GOOGLE_CLIENT_SECRET='your-google-client-secret', GOOGLE_REFRESH_TOKEN='your-google-refresh-token', SENTRY_DSN='https://examplePublicKey@o0.ingest.sentry.io/0', NEXT_PUBLIC_SENTRY_DSN='https://examplePublicKey@o0.ingest.sentry.io/0'.",
+			"issues": []
+		},
+		"VAL-CROSS-001": {
+			"status": "pass",
+			"evidence": "Dev server already running. Ran `curl -sf -o /dev/null -w '%{http_code}' http://localhost:3000` which returned HTTP 200 with exit code 0. Landing page is served without errors.",
+			"issues": []
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 7 assertions: 7 passed, 0 failed. All environment configuration, build, typecheck, lint, and smoke test assertions verified successfully."
+}

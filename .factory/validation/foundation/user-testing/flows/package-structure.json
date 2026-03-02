@@ -1,0 +1,30 @@
+{
+	"groupId": "package-structure",
+	"testedAt": "2026-03-03T00:15:30.000Z",
+	"toolsUsed": ["Read", "Execute"],
+	"assertions": {
+		"VAL-FOUND-001": {
+			"status": "pass",
+			"evidence": "packages/utils/package.json exists with \"name\": \"@nivalis/utils\"; tsconfig.json present with strict mode; src/index.ts exists and exports errors, layers, runtime modules; `turbo build` exited 0 — @nivalis/utils:build completed via `tsc --noEmit`.",
+			"issues": []
+		},
+		"VAL-FOUND-002": {
+			"status": "pass",
+			"evidence": "packages/ai/package.json exists with \"name\": \"@nivalis/ai\"; tsconfig.json present with strict mode; src/index.ts exists as entry point; `turbo build` exited 0 — @nivalis/ai:build completed via `tsc --noEmit`.",
+			"issues": []
+		},
+		"VAL-FOUND-003": {
+			"status": "pass",
+			"evidence": "apps/web/package.json lists \"@nivalis/utils\": \"workspace:*\" in dependencies; `turbo build` compiled @nivalis/web successfully (Next.js 16.1.6 build with TypeScript check passed), confirming the import is resolvable.",
+			"issues": []
+		},
+		"VAL-FOUND-004": {
+			"status": "pass",
+			"evidence": "apps/web/package.json lists \"@nivalis/ai\": \"workspace:*\" in dependencies; `turbo build` compiled @nivalis/web successfully (Next.js 16.1.6 build with TypeScript check passed), confirming the import is resolvable.",
+			"issues": []
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 4 assertions: all 4 passed. Both @nivalis/utils and @nivalis/ai packages have valid package.json, tsconfig.json, and src/index.ts. Both are declared as workspace:* dependencies in apps/web/package.json. turbo build completed successfully (exit 0) for all 3 packages."
+}
