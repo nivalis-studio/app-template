@@ -17,7 +17,8 @@
 		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
-		"effect": "catalog:"
+		"effect": "catalog:",
+		"googleapis": "catalog:"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",
