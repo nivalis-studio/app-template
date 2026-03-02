@@ -17,21 +17,18 @@ Every service follows this structure:
 
 ## ManagedRuntime Singleton
 
-Use globalThis caching for ManagedRuntime in Next.js to avoid re-creation on hot reload:
+Use the official `effect/GlobalValue` module for globalThis caching of ManagedRuntime in Next.js to avoid re-creation on hot reload:
 
 ```typescript
 import { ManagedRuntime, Layer } from "effect"
-
-const globalValue = <T>(key: string, value: () => T): T => {
-  const g = globalThis as Record<string, unknown>
-  g[key] ??= value()
-  return g[key] as T
-}
+import { globalValue } from "effect/GlobalValue"
 
 export const runtime = globalValue("effect-runtime", () =>
   ManagedRuntime.make(AppLive)
 )
 ```
+
+> **Note:** Use `import { globalValue } from "effect/GlobalValue"` — do NOT hand-roll a globalThis wrapper. The official module is already available in Effect.
 
 ## Error Handling
 

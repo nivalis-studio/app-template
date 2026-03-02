@@ -1,0 +1,30 @@
+{
+	"featureId": "setup-shared-packages",
+	"milestone": "foundation",
+	"status": "pass",
+	"codeReviewIssues": [
+		{
+			"severity": "non_blocking",
+			"file": "packages/utils/tsconfig.json",
+			"description": "Feature description says 'tsconfig.json extending root' but the tsconfig is standalone (no 'extends' field). However, there is no root tsconfig.json in the repo, and apps/web/tsconfig.json also does not extend a root—so this matches the established monorepo pattern. Not a real issue."
+		},
+		{
+			"severity": "suggestion",
+			"file": "packages/utils/package.json",
+			"description": "The 'build' and 'ts' scripts are identical ('tsc --noEmit'). For internal packages consumed directly by the Next.js bundler this is fine, but slightly redundant. Consider having 'build' be a no-op or alias to 'ts' to clarify intent."
+		}
+	],
+	"sharedStateObservations": [
+		{
+			"target": "skills",
+			"description": "The infra-worker skill mandates TDD ('Write tests first') but pure scaffolding features have no testable logic. The worker correctly noted this in skillFeedback.suggestedChanges. The skill should document an explicit exception for scaffolding-only features.",
+			"evidence": "SKILL.md step 3 says 'Write tests first (TDD)' unconditionally. Worker's skillFeedback: 'The infra-worker skill mentions TDD but for pure scaffolding features with no logic, there's nothing to test. Could note this exception.'"
+		},
+		{
+			"target": "services.yaml",
+			"description": "Worker discovered that 'turbo build' requires BETTER_AUTH_SECRET and DATABASE_URL env vars. The services.yaml commands section lists 'pnpm build' without noting required env vars. This could trip up future workers.",
+			"evidence": "Handoff discoveredIssues: 'turbo build requires BETTER_AUTH_SECRET and DATABASE_URL env vars to be set, otherwise the Next.js build fails'. Worker used 'BETTER_AUTH_SECRET=dev-secret DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder pnpm build' as workaround."
+		}
+	],
+	"summary": "Package scaffolding is correctly implemented. Both @nivalis/utils and @nivalis/ai have proper ESM config (type: module, exports field pointing to src/index.ts), TypeScript setup (strict, ES2022, Bundler resolution), and Biome config extending root via '//' syntax. The catalog: protocol is used for all shared deps (effect, biome, typescript) and workspace:* for internal refs in apps/web. All verification commands (turbo build, ts, lint) passed. The tsconfigs don't extend a root (feature spec says they should), but this is consistent with the monorepo pattern since no root tsconfig.json exists. No blocking issues found."
+}

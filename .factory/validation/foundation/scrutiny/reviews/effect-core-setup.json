@@ -1,0 +1,40 @@
+{
+	"featureId": "effect-core-setup",
+	"milestone": "foundation",
+	"reviewedAt": "2026-03-03T00:00:00.000Z",
+	"commitId": "babf13b05c96f27743717b0a3d8befdefb224320",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReviewIssues": [
+		{
+			"severity": "non_blocking",
+			"file": ".factory/library/effect-patterns.md",
+			"description": "The library doc shows a hand-rolled globalValue implementation, but the actual code correctly uses the official `effect/GlobalValue` module (globalValue from 'effect/GlobalValue'). The library doc should be updated to reference the official module to avoid workers re-implementing what Effect already provides."
+		},
+		{
+			"severity": "suggestion",
+			"file": "packages/utils/src/layers.ts",
+			"description": "composeLayers is typed as `typeof Layer.mergeAll` which is a direct alias. This works but provides no additional type narrowing or documentation at the type level. Consider whether a thin wrapper with explicit generics would improve discoverability, or keep the alias if simplicity is preferred."
+		}
+	],
+	"sharedStateObservations": [
+		{
+			"target": "library",
+			"description": "`.factory/library/effect-patterns.md` documents a manual `globalValue` helper using raw globalThis assignment, but the worker correctly used the built-in `effect/GlobalValue` module. The library doc should be updated to reference `import { globalValue } from 'effect/GlobalValue'` instead of the hand-rolled version to prevent future workers from re-implementing it.",
+			"evidence": "packages/utils/src/runtime.ts:10 uses `import { globalValue } from 'effect/GlobalValue'` while .factory/library/effect-patterns.md shows a manual `const globalValue = <T>(key: string, value: () => T): T => { const g = globalThis as Record<string, unknown>; ... }`"
+		},
+		{
+			"target": "skills",
+			"description": "The service-worker skill is focused on @nivalis/ai services, but was used for @nivalis/utils foundational Effect patterns. The worker noted this mismatch in skillFeedback.suggestedChanges. Consider adding a note to the skill or creating a separate skill for shared utility/pattern setup in @nivalis/utils.",
+			"evidence": "Skill SKILL.md opens with 'Builds Effect.ts services for AI connectors in the @nivalis/ai package' and the 'When to Use' section lists only AI connector use cases. Worker's skillFeedback.suggestedChanges: 'The service-worker skill is focused on @nivalis/ai services but this feature was about @nivalis/utils Effect core patterns.'"
+		},
+		{
+			"target": "skills",
+			"description": "Worker deviated from TDD (write tests first) procedure. The deviation was justified — the feature established new patterns from research docs, so implementing source first then writing tests was more efficient. The skill's TDD mandate may need a caveat for pattern-establishment features where the API shape is being designed during implementation.",
+			"evidence": "Handoff skillFeedback.deviations: step 'TDD - write tests first', whatIDidInstead: 'Implemented source files first, then wrote tests', why: 'The feature was about establishing patterns from research docs. Writing tests first without the source patterns defined would have required rewriting them.'"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "Clean, well-implemented feature. All 6 expected behaviors are met: ManagedRuntime singleton with globalThis caching (using official effect/GlobalValue), 4 typed error helpers via Data.TaggedError, 3 layer composition utilities, 12 passing tests across 3 files (well above the 2 minimum), barrel exports all utilities, and all required Effect patterns (Effect.gen, Context.GenericTag, Layer.effect, Data.TaggedError, ManagedRuntime) are used correctly. Code is well-documented with JSDoc and usage examples. The only shared-state observation worth acting on is updating .factory/library/effect-patterns.md to reference the official effect/GlobalValue module instead of the manual implementation."
+}

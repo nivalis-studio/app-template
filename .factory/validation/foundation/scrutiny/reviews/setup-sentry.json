@@ -1,0 +1,65 @@
+{
+	"featureId": "setup-sentry",
+	"milestone": "foundation",
+	"reviewedAt": "2026-03-03T00:00:00.000Z",
+	"commitId": "787409c45ce5ea8e79a49c20d87f221601f8c728",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Sentry integration is well-implemented following the research doc patterns. All required files exist with proper conditional initialization guarded by DSN presence. Graceful degradation confirmed (build succeeds without SENTRY_DSN). Environment validation uses empty-string-to-undefined coercion. Worker correctly used instrumentation-client.ts (v10+ pattern) instead of the deprecated sentry.client.config.ts mentioned in the feature description. Minor non-blocking issues found.",
+		"issues": [
+			{
+				"file": "apps/web/src/app/global-error.tsx",
+				"line": 7,
+				"severity": "non_blocking",
+				"description": "Missing `reset` prop from Next.js global-error signature. Next.js provides both `error` and `reset` props to global-error.tsx. The `reset` prop is a function to retry rendering the segment. Without it, users have no recovery path except a full page refresh. Consider adding: `reset: () => void` to the props and a retry button in the UI."
+			},
+			{
+				"file": "apps/web/instrumentation-client.ts",
+				"line": 16,
+				"severity": "non_blocking",
+				"description": "`sendDefaultPii: true` sends user IP addresses and request headers to Sentry by default. This is fine for most apps but should be a conscious decision. For GDPR-sensitive deployments, this may need to be toggled off. Not blocking for a template, but worth noting."
+			},
+			{
+				"file": "apps/web/next.config.ts",
+				"line": 46,
+				"severity": "non_blocking",
+				"description": "`tunnelRoute: '/monitoring'` is configured. If a middleware.ts is added later, it must exclude '/monitoring' from its matcher to avoid interfering with the Sentry tunnel. The research doc notes this explicitly. No middleware exists yet, so not blocking, but this should be documented as a convention."
+			}
+		]
+	},
+	"codeReviewIssues": [
+		{
+			"severity": "non_blocking",
+			"file": "apps/web/src/app/global-error.tsx",
+			"description": "Missing `reset` prop from Next.js global-error signature. Users have no recovery path except a full page refresh. Consider adding `reset: () => void` to props and a retry button."
+		},
+		{
+			"severity": "non_blocking",
+			"file": "apps/web/instrumentation-client.ts",
+			"description": "`sendDefaultPii: true` sends user IP and request headers to Sentry. Fine for most apps but should be a conscious decision for GDPR-sensitive deployments."
+		},
+		{
+			"severity": "non_blocking",
+			"file": "apps/web/next.config.ts",
+			"description": "`tunnelRoute: '/monitoring'` requires any future middleware.ts to exclude '/monitoring' from its matcher. No middleware exists yet, but this should be documented as a convention."
+		}
+	],
+	"sharedStateObservations": [
+		{
+			"target": "AGENTS.md",
+			"area": "conventions",
+			"description": "Sentry tunnel route '/monitoring' must be excluded from any future middleware matcher. This convention should be documented in AGENTS.md under React/Next.js conventions to prevent future workers from accidentally blocking Sentry event forwarding.",
+			"evidence": "apps/web/next.config.ts:46 — tunnelRoute: '/monitoring'. Research doc (.factory/research/sentry-nextjs.md) explicitly warns: 'If using tunnelRoute and Next.js middleware, exclude the tunnel route' with matcher example."
+		},
+		{
+			"target": "library",
+			"area": "conventions",
+			"description": "environment.md was already updated with Sentry env vars (SENTRY_DSN, NEXT_PUBLIC_SENTRY_DSN, SENTRY_AUTH_TOKEN). No gap found — this was handled well.",
+			"evidence": ".factory/library/environment.md contains '## Monitoring' section with all three Sentry env vars documented."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "PASS. The Sentry integration is complete and correct. All 7 expected behaviors are met: @sentry/nextjs installed via catalog, config files for client/server/edge exist, next.config.ts wrapped with withSentryConfig, env validation includes optional SENTRY_DSN/NEXT_PUBLIC_SENTRY_DSN with empty-string coercion, instrumentation.ts registers Sentry, global-error.tsx captures exceptions, and graceful degradation works (build passes without DSN). Three non-blocking issues found: missing reset prop in global-error.tsx, sendDefaultPii enabled by default, and undocumented tunnel route middleware exclusion convention."
+}

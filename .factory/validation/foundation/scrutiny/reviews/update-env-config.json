@@ -1,0 +1,19 @@
+{
+	"featureId": "update-env-config",
+	"milestone": "foundation",
+	"reviewedAt": "2026-03-03T00:10:00.000Z",
+	"commitId": "082e527bf476c21486b68dd7c4f1b4052ee57d51",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReviewIssues": [
+		{
+			"severity": "non_blocking",
+			"file": "apps/web/src/env.ts",
+			"description": "Inconsistent empty-string handling: SENTRY_DSN uses `process.env.SENTRY_DSN || undefined` to coerce empty strings to undefined, but new optional vars (OPENAI_API_KEY, etc.) use bare `process.env.X`. If someone sets an empty string in .env (e.g. OPENAI_API_KEY=\"\"), it passes Zod validation as a valid string but would fail at the SDK level. Not blocking because (a) the SENTRY_DSN pattern exists specifically for its .url() validator, and (b) empty-string API keys are an unlikely misconfiguration."
+		}
+	],
+	"sharedStateObservations": [],
+	"addressesFailureFrom": null,
+	"summary": "Feature fully implements all requirements. env.ts adds 7 optional vars (4 AI provider keys + 3 Google OAuth) with z.string().optional(), turbo.json build.env includes all 7 new vars, and .env.example has organized sections with placeholder values for every var. DATABASE_URL and BETTER_AUTH_SECRET remain z.string() (required), ensuring fail-fast on missing values. All validation contract items (VAL-FOUND-012 through VAL-FOUND-016, VAL-FOUND-018) are satisfied. Worker followed infra-worker skill procedure, ran pnpm ts/lint/test (all exit 0), and pre-commit hooks passed. One non-blocking observation: inconsistent empty-string coercion pattern in processEnv mapping."
+}
