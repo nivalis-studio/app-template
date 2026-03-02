@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@ai-sdk/google':
+      specifier: 3.0.36
+      version: 3.0.36
     '@ai-sdk/mistral':
       specifier: 3.0.22
       version: 3.0.22
@@ -294,6 +297,9 @@ importers:
 
   packages/ai:
     dependencies:
+      '@ai-sdk/google':
+        specifier: 'catalog:'
+        version: 3.0.36(zod@4.3.6)
       '@ai-sdk/mistral':
         specifier: 'catalog:'
         version: 3.0.22(zod@4.3.6)
@@ -346,6 +352,12 @@ packages:
 
   '@ai-sdk/gateway@3.0.59':
     resolution: {integrity: sha512-MbtheWHgEFV/8HL1Z6E3hOAsmP73zZlNFg0F0nJAD0Adnjp4J/plqNK00Y896d+dWTw+r0OXzyov9/2wCFjH0Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/google@3.0.36':
+    resolution: {integrity: sha512-Bex79zKP9dxCTjKMR+uiS3EUNd7I812zdsFGAV+FD38Oa6S8savFn1PoIEhSH/x+bxWDfp2dR5IuZP51bePUpQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5837,6 +5849,12 @@ snapshots:
       '@ai-sdk/provider': 3.0.8
       '@ai-sdk/provider-utils': 4.0.16(zod@4.3.6)
       '@vercel/oidc': 3.1.0
+      zod: 4.3.6
+
+  '@ai-sdk/google@3.0.36(zod@4.3.6)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.17(zod@4.3.6)
       zod: 4.3.6
 
   '@ai-sdk/mistral@3.0.22(zod@4.3.6)':

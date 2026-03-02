@@ -18,6 +18,16 @@ export {
   type ScrapedPage,
   type ScrapedPageMetadata,
 } from './firecrawl.js';
+// Gemini PDF (document extraction)
+export {
+  GeminiPdfError,
+  GeminiPdfLive,
+  GeminiPdfService,
+  type GeminiPdfServiceShape,
+  type PdfExtractionResult,
+  type PdfExtractionUsage,
+  type PdfPageInfo,
+} from './gemini-pdf.js';
 // Google Auth (shared dependency for Google services)
 export {
   GoogleAuth,

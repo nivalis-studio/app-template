@@ -17,6 +17,7 @@
 		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
+		"@ai-sdk/google": "catalog:",
 		"@ai-sdk/mistral": "catalog:",
 		"@mendable/firecrawl-js": "catalog:",
 		"ai": "catalog:",
