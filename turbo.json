@@ -16,7 +16,14 @@
 				"DATABASE_URL",
 				"BETTER_AUTH_SECRET",
 				"SENTRY_DSN",
-				"SENTRY_AUTH_TOKEN"
+				"SENTRY_AUTH_TOKEN",
+				"OPENAI_API_KEY",
+				"MISTRAL_API_KEY",
+				"GOOGLE_GENERATIVE_AI_API_KEY",
+				"FIRECRAWL_API_KEY",
+				"GOOGLE_CLIENT_ID",
+				"GOOGLE_CLIENT_SECRET",
+				"GOOGLE_REFRESH_TOKEN"
 			],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},

@@ -9,6 +9,17 @@ const serverSchema = z.object({
   DATABASE_URL: z.string(),
   BETTER_AUTH_SECRET: z.string(),
   SENTRY_DSN: z.string().url().optional(),
+
+  // AI Provider Keys
+  OPENAI_API_KEY: z.string().optional(),
+  MISTRAL_API_KEY: z.string().optional(),
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+  FIRECRAWL_API_KEY: z.string().optional(),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_REFRESH_TOKEN: z.string().optional(),
 });
 
 const clientSchema = z.object({
@@ -29,6 +40,17 @@ const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
   SENTRY_DSN: process.env.SENTRY_DSN || undefined,
+
+  // AI Provider Keys
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
+  GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+  FIRECRAWL_API_KEY: process.env.FIRECRAWL_API_KEY,
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
 
   // sharedSchema keys
   NODE_ENV: process.env.NODE_ENV,
