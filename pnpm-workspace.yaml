@@ -4,6 +4,7 @@ packages:
 
 catalog:
   "@ai-sdk/openai": 3.0.37
+  "@sentry/nextjs": 10.41.0
   "@ai-sdk/react": 3.0.107
   "@base-ui/react": 1.2.0
   "@biomejs/biome": 2.4.4
@@ -62,6 +63,7 @@ onlyBuiltDependencies:
   - "@parcel/watcher"
   - "@prisma/client"
   - "@prisma/engines"
+  - "@sentry/cli"
   - "@swc/core"
   - "@tailwindcss/oxide"
   - "@vercel/speed-insights"

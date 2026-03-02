@@ -24,6 +24,7 @@
 		"@nivalis/ai": "workspace:*",
 		"@nivalis/utils": "workspace:*",
 		"@prisma/adapter-neon": "catalog:",
+		"@sentry/nextjs": "catalog:",
 		"@prisma/client": "catalog:",
 		"@vercel/analytics": "catalog:",
 		"@vercel/config": "catalog:",

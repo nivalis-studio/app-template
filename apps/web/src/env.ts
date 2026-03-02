@@ -8,10 +8,12 @@ import type { util } from 'zod/v4/core';
 const serverSchema = z.object({
   DATABASE_URL: z.string(),
   BETTER_AUTH_SECRET: z.string(),
+  SENTRY_DSN: z.string().url().optional(),
 });
 
 const clientSchema = z.object({
   NEXT_PUBLIC_VERCEL_URL: z.string().optional(),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 });
 
 const sharedSchema = z.object({
@@ -21,10 +23,12 @@ const sharedSchema = z.object({
 const processEnv = {
   // clientSchema keys
   NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
+  NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || undefined,
 
   // serverSchema keys
   DATABASE_URL: process.env.DATABASE_URL,
   BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+  SENTRY_DSN: process.env.SENTRY_DSN || undefined,
 
   // sharedSchema keys
   NODE_ENV: process.env.NODE_ENV,
