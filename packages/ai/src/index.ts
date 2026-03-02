@@ -35,6 +35,17 @@ export {
   GoogleAuthLive,
   type GoogleAuthService,
 } from './google-auth.js';
+// Google Calendar (calendar operations)
+export {
+  type CalendarEvent,
+  type EventDateTime,
+  type EventInput,
+  GoogleCalendarError,
+  GoogleCalendarLive,
+  GoogleCalendarService,
+  type GoogleCalendarServiceShape,
+  type TimeRange,
+} from './google-calendar.js';
 // Google Sheets (spreadsheet operations)
 export {
   GoogleSheetsError,
