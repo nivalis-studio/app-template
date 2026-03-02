@@ -158,6 +158,12 @@ importers:
       '@base-ui/react':
         specifier: 'catalog:'
         version: 1.2.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@nivalis/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@nivalis/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@prisma/adapter-neon':
         specifier: 'catalog:'
         version: 7.4.2
@@ -258,6 +264,38 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.2.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/ai:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 3.19.19
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 'catalog:'
+        version: 2.4.4
+      '@nivalis/biome-config':
+        specifier: 'catalog:'
+        version: 2.4.4(@biomejs/biome@2.4.4)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/utils:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 3.19.19
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 'catalog:'
+        version: 2.4.4
+      '@nivalis/biome-config':
+        specifier: 'catalog:'
+        version: 2.4.4(@biomejs/biome@2.4.4)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
