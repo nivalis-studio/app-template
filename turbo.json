@@ -27,6 +27,10 @@
 		"ts": {
 			"dependsOn": ["^ts"],
 			"outputs": [".next/types/**", "!.next/cache/**", "tsconfig.tsbuildinfo"]
+		},
+		"test": {
+			"cache": false,
+			"dependsOn": ["^build"]
 		}
 	}
 }

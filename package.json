@@ -14,6 +14,7 @@
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"ts": "turbo ts",
+		"test": "turbo test",
 		"prepare": "lefthook install"
 	},
 	"devDependencies": {
@@ -22,6 +23,7 @@
 		"@commitlint/config-conventional": "catalog:",
 		"@nivalis/biome-config": "catalog:",
 		"lefthook": "catalog:",
-		"turbo": "catalog:"
+		"turbo": "catalog:",
+		"vitest": "catalog:"
 	}
 }

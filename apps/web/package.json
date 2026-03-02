@@ -15,7 +15,8 @@
 		"postinstall": "prisma generate --no-hints",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
-		"ts": "next typegen && tsc --noEmit"
+		"ts": "next typegen && tsc --noEmit",
+		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "catalog:",
@@ -57,6 +58,7 @@
 		"@types/react-dom": "catalog:",
 		"schema-dts": "catalog:",
 		"tailwindcss": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
