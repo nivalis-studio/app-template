@@ -1,47 +1,21 @@
 {
 	"milestone": "foundation",
-	"round": 1,
+	"round": 2,
 	"status": "fail",
 	"assertionsSummary": {
-		"total": 20,
-		"passed": 19,
+		"total": 1,
+		"passed": 0,
 		"failed": 1,
 		"blocked": 0
 	},
-	"passedAssertions": [
-		"VAL-FOUND-001",
-		"VAL-FOUND-002",
-		"VAL-FOUND-003",
-		"VAL-FOUND-004",
-		"VAL-FOUND-005",
-		"VAL-FOUND-006",
-		"VAL-FOUND-007",
-		"VAL-FOUND-008",
-		"VAL-FOUND-009",
-		"VAL-FOUND-010",
-		"VAL-FOUND-011",
-		"VAL-FOUND-012",
-		"VAL-FOUND-013",
-		"VAL-FOUND-014",
-		"VAL-FOUND-015",
-		"VAL-FOUND-016",
-		"VAL-FOUND-017",
-		"VAL-FOUND-018",
-		"VAL-CROSS-001"
-	],
+	"passedAssertions": [],
 	"failedAssertions": [
 		{
 			"id": "VAL-FOUND-019",
-			"reason": "@nivalis/utils exports only Effect-related utilities (8 exports: NotFoundError, ServiceError, UnauthorizedError, ValidationError, composeLayers, makeEffectServiceLayer, makeServiceLayer, makeRuntime). The assertion requires at least one general-purpose helper function (e.g., cn(), debounce, formatDate) but none exists. All 3 source files (errors.ts, layers.ts, runtime.ts) are Effect-specific."
+			"reason": "@nivalis/utils still exports only Effect-related utilities (errors.ts, layers.ts, runtime.ts). The assertion requires at least one general-purpose helper function (e.g., cn(), debounce, formatDate, slugify) but none exists. The 'misc-foundation-polish' feature that was planned to fix this is still pending/not implemented."
 		}
 	],
 	"blockedAssertions": [],
-	"appliedUpdates": [
-		{
-			"target": "user-testing.md",
-			"description": "Added Flow Validator Guidance: Foundation Infrastructure section with isolation rules, testing approach, and build environment details",
-			"source": "setup"
-		}
-	],
-	"previousRound": null
+	"appliedUpdates": [],
+	"previousRound": ".factory/validation/foundation/user-testing/synthesis-round1.json"
 }
