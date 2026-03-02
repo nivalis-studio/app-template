@@ -25,3 +25,12 @@ export {
   GoogleAuthLive,
   type GoogleAuthService,
 } from './google-auth.js';
+// Mistral OCR (document processing)
+export {
+  MistralOcrError,
+  MistralOcrLive,
+  MistralOcrService,
+  type MistralOcrServiceShape,
+  type OcrResult,
+  type OcrUsage,
+} from './mistral-ocr.js';
