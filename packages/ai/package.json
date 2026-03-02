@@ -17,6 +17,7 @@
 		"test": "vitest run --passWithNoTests"
 	},
 	"dependencies": {
+		"@mendable/firecrawl-js": "catalog:",
 		"effect": "catalog:",
 		"googleapis": "catalog:"
 	},
