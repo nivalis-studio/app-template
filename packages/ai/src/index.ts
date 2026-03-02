@@ -35,6 +35,14 @@ export {
   GoogleAuthLive,
   type GoogleAuthService,
 } from './google-auth.js';
+// Google Sheets (spreadsheet operations)
+export {
+  GoogleSheetsError,
+  GoogleSheetsLive,
+  GoogleSheetsService,
+  type GoogleSheetsServiceShape,
+  type SheetData,
+} from './google-sheets.js';
 // Mistral OCR (document processing)
 export {
   MistralOcrError,
