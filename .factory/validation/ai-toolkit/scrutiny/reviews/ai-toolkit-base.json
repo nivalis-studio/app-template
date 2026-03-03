@@ -1,0 +1,33 @@
+{
+	"featureId": "ai-toolkit-base",
+	"reviewedAt": "2026-03-03T00:45:00.000Z",
+	"commitId": "fc12c3dcce73a9199c2d834d48f4329a9600a1e8",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation that meets all feature requirements. GoogleAuth service uses the correct Effect patterns (Context.GenericTag, Data.TaggedError, Layer.effect with Config). googleapis is properly added to the pnpm catalog and package dependencies. Barrel exports are complete. 8 well-structured tests cover happy path, ConfigError for each missing config key, error class behavior, and mock layer usage. One non-blocking design concern: getClient wraps a pure object construction in Effect.try, which can never throw, making the GoogleAuthError in its error channel unreachable in practice.",
+		"issues": [
+			{
+				"file": "packages/ai/src/google-auth.ts",
+				"line": 80,
+				"severity": "non_blocking",
+				"description": "getClient uses Effect.try around `() => ({ client: authClient })` which is a pure object literal and can never throw. The GoogleAuthError catch handler is dead code. Effect.succeed({ client: authClient }) would be more accurate. The declared error type GoogleAuthError on getClient is unreachable — config validation errors (ConfigError) occur during layer construction, not during getClient invocation. This is a minor design inaccuracy, not a bug."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "skills",
+			"observation": "Worker noted that the service-worker skill's reference pattern uses `interface` for domain types, but biome enforces `type` aliases. The skill example could be updated to use `type` to match actual project biome rules.",
+			"evidence": "Handoff skillFeedback.suggestedChanges: 'The service-worker skill reference pattern uses `interface` keyword for domain types, but biome enforces `type` aliases instead — the skill example could be updated to use `type` for consistency with biome rules'. Worker correctly used `type` in google-auth.ts:24 and google-auth.ts:33."
+		},
+		{
+			"area": "conventions",
+			"observation": "The errors.ts file comment says 'Each AI connector defines its own tagged error extending these patterns', implying errors for all services will live in this centralized file. However, the skill procedure says each service defines its own error alongside the service file. This could lead to inconsistency — either centralize all errors in errors.ts or colocate them per-service. A convention should be documented.",
+			"evidence": "packages/ai/src/errors.ts header comment vs. SKILL.md step 5 which says 'Define the error type with Data.TaggedError' alongside the service implementation. Currently GoogleAuthError is in errors.ts, separate from google-auth.ts."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "Feature ai-toolkit-base passes review. All six expected behaviors are met: GoogleAuth service tag exported, GoogleAuthLive reads 3 config keys, GoogleAuthError defined with Data.TaggedError, googleapis in catalog and dependencies, 8 tests pass (3 specifically for ConfigError on missing config), and everything exported from barrel index.ts. The biome.jsonc override for noBarrelFile is correctly applied. One non-blocking issue: getClient's Effect.try wraps a non-throwing expression, making GoogleAuthError unreachable on that method. Two shared-state observations noted for the validator to triage: skill example uses interface vs biome-required type, and error file placement convention is ambiguous."
+}

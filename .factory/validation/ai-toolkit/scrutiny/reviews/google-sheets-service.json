@@ -1,0 +1,34 @@
+{
+	"featureId": "google-sheets-service",
+	"reviewedAt": "2026-03-03T01:15:00.000Z",
+	"commitId": "e5f6b84f4e6a841f3a950f0900e44dfa2760b8f0",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation that follows established patterns exactly. GoogleSheetsService provides readRange, writeRange, and appendRows as specified. The service depends on the shared GoogleAuth layer, uses Context.GenericTag for the service tag, Data.TaggedError for GoogleSheetsError, and Layer.effect for the live implementation. Domain type SheetData correctly wraps the raw API response. All 11 tests pass with properly mocked googleapis. Barrel exports are correct and alphabetically ordered. The code is consistent with the sibling google-calendar.ts and firecrawl.ts services.",
+		"issues": [
+			{
+				"file": "packages/ai/src/__tests__/google-sheets.test.ts",
+				"line": 152,
+				"severity": "non_blocking",
+				"description": "The 'wraps write API errors in GoogleSheetsError' test only asserts exit._tag === 'Failure' without verifying the error is specifically a GoogleSheetsError (unlike the readRange error test at line 107 which uses catchTag). Same pattern at line 181 for append errors. This means the tests would pass even if the error type were wrong. Consider using catchTag('GoogleSheetsError', ...) for consistency with the readRange error test."
+			},
+			{
+				"file": "packages/ai/src/__tests__/google-sheets.test.ts",
+				"line": 14,
+				"severity": "non_blocking",
+				"description": "Mock functions (mockGet, mockUpdate, mockAppend) are not reset between tests via beforeEach/afterEach. The use of mockResolvedValueOnce/mockRejectedValueOnce mitigates this, but if a test fails mid-execution, leftover mock state could leak into subsequent tests. Adding vi.clearAllMocks() in a beforeEach would be more robust."
+			},
+			{
+				"file": "packages/ai/src/__tests__/google-sheets.test.ts",
+				"line": 29,
+				"severity": "non_blocking",
+				"description": "The mock includes google.auth.OAuth2 class which is unused in these tests since GoogleAuth is fully mocked via MockGoogleAuth layer. This is harmless but unnecessary mock surface."
+			}
+		]
+	},
+	"sharedStateObservations": [],
+	"addressesFailureFrom": null,
+	"summary": "Google Sheets service passes review. The implementation correctly follows established Effect service patterns (Context.GenericTag, Data.TaggedError, Layer.effect with GoogleAuth dependency). All 3 required methods (readRange, writeRange, appendRows) are implemented with proper error mapping via Effect.tryPromise. SheetData domain type correctly wraps API responses with sensible defaults for missing fields. 11 tests comprehensively cover happy paths, error handling, error type validation, dependency verification, and mock layer usage. Three non-blocking issues noted: two error tests use weaker assertions than they could, and mock cleanup between tests is missing. No shared state gaps detected — worker followed the skill procedure, used documented patterns, and no new conventions or services were introduced."
+}

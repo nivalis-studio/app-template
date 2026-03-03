@@ -1,0 +1,40 @@
+{
+	"featureId": "google-calendar-service",
+	"reviewedAt": "2026-03-03T01:15:00.000Z",
+	"commitId": "ffe09bb982a715036840dbae6ed7dae082377483",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation that fully covers all required service methods (listEvents, createEvent, updateEvent, deleteEvent). Follows established patterns from google-sheets.ts and other services. Domain types properly isolate SDK types, error handling is consistent with Effect.tryPromise + GoogleCalendarError mapping, and the GoogleAuth dependency is correctly wired. 13 comprehensive tests cover happy paths, error scenarios, error type validation, dependency verification, and mock layer composability. No blocking issues found.",
+		"issues": [
+			{
+				"file": "packages/ai/src/google-calendar.ts",
+				"line": 268,
+				"severity": "non_blocking",
+				"description": "updateEvent uses `calendar.events.update` which does a full resource replacement in the Google Calendar API. For partial updates (where EventInput has all optional fields), `calendar.events.patch` would be more semantically correct and avoid accidentally clearing fields not provided in the input. However, the current behavior is functional and matches the feature spec's wording."
+			},
+			{
+				"file": "packages/ai/src/google-calendar.ts",
+				"line": 237,
+				"severity": "non_blocking",
+				"description": "In createEvent and updateEvent, when event.start or event.end is provided, individual undefined sub-fields (dateTime, date, timeZone) are passed through to the googleapis requestBody. While googleapis handles undefined values correctly (omitting them from JSON), explicitly filtering undefined fields would be slightly more defensive."
+			},
+			{
+				"file": "packages/ai/src/__tests__/google-calendar.test.ts",
+				"line": 195,
+				"severity": "non_blocking",
+				"description": "Inconsistent error assertion pattern: createEvent and deleteEvent error tests use runPromiseExit + check exit._tag === 'Failure', while listEvents and updateEvent error tests use catchTag to verify the error message. Both work, but using the same approach throughout would improve consistency. The catchTag pattern is more thorough as it verifies the error message content."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "skills",
+			"observation": "The service-worker skill procedure step 4b says to 'Test that missing API key produces ConfigError', but Google services (Calendar, Sheets, Gmail) depend on GoogleAuth rather than reading Config directly. This test pattern only applies to non-Google services (Firecrawl, Mistral OCR, Gemini PDF). The skill should clarify that Google services skip the ConfigError test since auth is delegated to GoogleAuth.",
+			"evidence": "SKILL.md step 4b: 'Test that missing API key produces ConfigError'. google-calendar.ts reads auth from GoogleAuth (line 225: 'const auth = yield* GoogleAuth'), not from Config. The worker correctly skipped this test — no ConfigError test exists in google-calendar.test.ts, which is the right behavior but contradicts the skill's explicit instruction."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "Google Calendar service passes review. Implementation correctly provides all 4 required methods (listEvents, createEvent, updateEvent, deleteEvent) as an Effect service with GoogleAuth dependency, typed GoogleCalendarError, and comprehensive domain types. 13 tests cover all methods with happy paths and error scenarios. Code follows established project patterns from google-sheets.ts. Three non-blocking issues noted: (1) update uses full replacement instead of patch, (2) undefined sub-fields passed through in requestBody, (3) inconsistent error assertion patterns in tests. One skill observation: the service-worker skill's ConfigError test instruction doesn't account for Google services that delegate auth."
+}

@@ -1,0 +1,40 @@
+{
+	"featureId": "gemini-pdf-service",
+	"reviewedAt": "2026-03-03T01:15:00.000Z",
+	"commitId": "efa208b35e4ec8e655c698a01c18a93c69b44ba2",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation that follows the established Effect service pattern from mistral-ocr.ts exactly. GeminiPdfService, GeminiPdfError, domain types (PdfExtractionResult, PdfExtractionUsage, PdfPageInfo), and GeminiPdfLive layer are all correctly implemented. API key read from Config. @ai-sdk/google added to pnpm catalog. 8 well-structured tests. Barrel exports complete. All validators (test, ts, lint) passed.",
+		"issues": [
+			{
+				"file": "packages/ai/src/gemini-pdf.ts",
+				"line": 186,
+				"severity": "non_blocking",
+				"description": "Duplicate filePart construction: both branches of the `input instanceof URL` ternary produce identical objects (same type, same data reference, same mediaType). The conditional is redundant. This is an existing pattern from mistral-ocr.ts as well, so it's consistent but could be simplified to a single object literal."
+			},
+			{
+				"file": "packages/ai/src/__tests__/gemini-pdf.test.ts",
+				"line": 16,
+				"severity": "non_blocking",
+				"description": "Happy path tests use Layer.succeed with mock implementations, which means the real Live layer's parsePageInfo() logic and JSON structured data extraction are not covered by any test. Only the layer construction (valid config) test touches GeminiPdfLive. This is consistent with the mistral-ocr test pattern, but a test exercising the actual parsing logic via a mocked generateText would improve confidence."
+			},
+			{
+				"file": "packages/ai/src/gemini-pdf.ts",
+				"line": 146,
+				"severity": "non_blocking",
+				"description": "The parsePageInfo helper uses PAGE_MARKER_RE with regex split that relies on capture groups being included in split results. This is correct JavaScript behavior but the parsing is fragile — if the LLM deviates from the exact '--- Page N ---' format, it silently falls back to a single page. This is acceptable for a first implementation but worth noting for future hardening."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "conventions",
+			"observation": "Both gemini-pdf.ts and mistral-ocr.ts contain identical duplicate filePart ternary branches (instanceof URL check with both branches producing the same object). This could be documented as a known simplification opportunity in the ai-connectors library doc or cleaned up as a pattern.",
+			"evidence": "packages/ai/src/gemini-pdf.ts:186-197 and packages/ai/src/mistral-ocr.ts:140-143 — both branches produce { type: 'file', data: input, mediaType: '...' } regardless of input type."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "GeminiPdfService implementation passes review. The service correctly implements the Effect service pattern with Context.GenericTag, Data.TaggedError, Config-based API key reading, and proper barrel exports. 8 tests cover happy paths (URL and Buffer inputs, multi-page), error scenarios (missing config, API errors), error type validation, and layer construction. All non-blocking issues are consistent with established patterns from other services. Worker followed the skill procedure faithfully."
+}

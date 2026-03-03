@@ -1,0 +1,124 @@
+{
+	"milestone": "ai-toolkit",
+	"round": 1,
+	"status": "pass",
+	"validatorsRun": {
+		"test": {
+			"passed": true,
+			"command": "pnpm test",
+			"exitCode": 0,
+			"details": "85 tests passed (12 in @nivalis/utils, 73 in @nivalis/ai, 0 test files in @nivalis/web)"
+		},
+		"typecheck": {
+			"passed": true,
+			"command": "pnpm ts",
+			"exitCode": 0,
+			"details": "All 3 packages typechecked successfully (turbo cached)"
+		},
+		"lint": {
+			"passed": true,
+			"command": "pnpm lint",
+			"exitCode": 0,
+			"details": "66 files checked across 3 packages with no lint issues"
+		}
+	},
+	"reviewsSummary": {
+		"total": 8,
+		"passed": 8,
+		"failed": 0,
+		"failedFeatures": []
+	},
+	"blockingIssues": [],
+	"nonBlockingIssues": [
+		{
+			"featureId": "ai-toolkit-base",
+			"description": "getClient in google-auth.ts wraps non-throwing expression in Effect.try — GoogleAuthError catch handler is dead code"
+		},
+		{
+			"featureId": "firecrawl-service",
+			"description": "@mendable/firecrawl-js uses caret range (^4.15.1) in pnpm catalog while all other entries use exact versions"
+		},
+		{
+			"featureId": "mistral-ocr-service",
+			"description": "Dead conditional branch in filePart construction — both ternary branches produce identical objects"
+		},
+		{
+			"featureId": "gemini-pdf-service",
+			"description": "Same duplicate filePart ternary as mistral-ocr-service (copy-paste pattern)"
+		},
+		{
+			"featureId": "gemini-pdf-service",
+			"description": "parsePageInfo regex-based page marker detection is fragile — falls back to single page silently if LLM format deviates"
+		},
+		{
+			"featureId": "google-sheets-service",
+			"description": "Two error tests assert only exit._tag === 'Failure' without verifying specific GoogleSheetsError type"
+		},
+		{
+			"featureId": "google-calendar-service",
+			"description": "updateEvent uses full resource replacement (events.update) instead of partial patch (events.patch)"
+		},
+		{
+			"featureId": "gmail-service",
+			"description": "makeRawEmail helper omits From: header in RFC 2822 message (Gmail fills it automatically but less RFC-compliant)"
+		},
+		{
+			"featureId": "gmail-service",
+			"description": "list method uses Promise.all for parallel message fetching — could hit rate limits at scale (mitigated by default maxResults of 20)"
+		},
+		{
+			"featureId": "ai-toolkit-barrel",
+			"description": "ConfigError tests in toolkit.test.ts only assert Failure tag without verifying specific ConfigError type"
+		},
+		{
+			"featureId": "multiple",
+			"description": "Inconsistent error assertion patterns across test files — some use catchTag (more thorough), some only check exit._tag (weaker)"
+		}
+	],
+	"appliedUpdates": [],
+	"suggestedGuidanceUpdates": [
+		{
+			"target": "skills",
+			"suggestion": "Update service-worker skill: step 4b 'Test that missing API key produces ConfigError' should clarify that this only applies to standalone services (Firecrawl, MistralOcr, GeminiPdf). Google services (Sheets, Calendar, Gmail) delegate auth to GoogleAuth and should mock GoogleAuth instead of testing ConfigError directly.",
+			"evidence": "Google Calendar, Google Sheets, and Gmail reviewers all noted this mismatch. Workers correctly deviated from the skill by mocking GoogleAuth instead. The skill instruction is misleading for services that use shared auth.",
+			"isSystemic": true
+		},
+		{
+			"target": "skills",
+			"suggestion": "Update service-worker skill: use `type` keyword instead of `interface` in domain type examples, matching biome's enforced convention in this project.",
+			"evidence": "ai-toolkit-base reviewer noted biome enforces `type` aliases. Worker correctly used `type` but the skill's reference pattern uses `interface`.",
+			"isSystemic": false
+		},
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Add convention: pnpm catalog entries should use exact versions (no caret/tilde ranges) for consistency. Currently all entries except @mendable/firecrawl-js use exact versions.",
+			"evidence": "firecrawl-service review noted ^4.15.1 is the only caret range among 40+ catalog entries. Establishing this as an explicit rule prevents future inconsistency.",
+			"isSystemic": false
+		},
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Add convention: test error assertions should use catchTag pattern to verify specific error types, not just exit._tag === 'Failure'. This prevents false positives if error sources change.",
+			"evidence": "Noted in google-sheets, google-calendar, and ai-toolkit-barrel reviews. Inconsistent assertion patterns across 5+ test files. catchTag is already used in some tests but not others.",
+			"isSystemic": true
+		}
+	],
+	"rejectedObservations": [
+		{
+			"observation": "AGENTS.md references .factory/library/effect-patterns.md but the directory does not exist",
+			"reason": "Factually incorrect — .factory/library/ exists with 5 files including effect-patterns.md. The reviewer's glob search may have failed or been run from the wrong directory."
+		},
+		{
+			"observation": "Error file placement convention is ambiguous (centralized errors.ts vs colocated per-service)",
+			"reason": "The current approach is consistent: GoogleAuthError lives in errors.ts as a shared base, while service-specific errors (FirecrawlError, GmailError, etc.) are defined in their respective service files. This is already a clear convention, just not explicitly documented as such."
+		},
+		{
+			"observation": "Layer composition pattern from toolkit.ts should be captured in library",
+			"reason": "Already documented in .factory/library/effect-patterns.md under 'Layer Composition' section which describes the exact patterns including GoogleAuthLive sharing and AiToolkitLive merging."
+		},
+		{
+			"observation": "Firecrawl SDK v1 vs v4 method name differences should be noted in skill",
+			"reason": "This is a one-time migration detail, not an ongoing concern. The correct v4 methods are already used in the implementation and documented in the research file."
+		}
+	],
+	"previousRound": null
+}

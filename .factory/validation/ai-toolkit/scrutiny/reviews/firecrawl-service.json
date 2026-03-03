@@ -1,0 +1,39 @@
+{
+	"featureId": "firecrawl-service",
+	"reviewedAt": "2026-03-03T00:05:00.000Z",
+	"commitId": "6699db259b5d2bb376cf7c150b84c261a8d13c40",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation following all established Effect service patterns. FirecrawlService provides scrape, crawl, and extract methods wrapping the @mendable/firecrawl-js v4 SDK. Domain types properly encapsulate SDK internals. Error handling correctly maps SDK failures to typed FirecrawlError via Effect.tryPromise. Config reads FIRECRAWL_API_KEY from Effect Config. 9 comprehensive tests cover happy paths, ConfigError on missing key, error propagation, error type validation, and live layer construction. Service is properly exported from barrel and integrated into AiToolkitLive composed layer.",
+		"issues": [
+			{
+				"file": "pnpm-workspace.yaml",
+				"line": null,
+				"severity": "non_blocking",
+				"description": "Catalog entry '@mendable/firecrawl-js': ^4.15.1 uses a caret range, while every other entry in the catalog uses exact versions (e.g., 'effect: 3.19.19', 'ai: 6.0.105'). Should use exact version '4.15.1' for consistency with the rest of the catalog."
+			},
+			{
+				"file": "packages/ai/src/__tests__/firecrawl.test.ts",
+				"line": null,
+				"severity": "non_blocking",
+				"description": "API error tests for scrape and crawl use mock layers that return pre-made FirecrawlError rather than testing the Live layer's catch clause. This means the actual SDK error → FirecrawlError mapping in the Live layer is not exercised. Additionally, no error test covers the extract method's error path. Acceptable given the project convention of mocking all external calls, but worth noting."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "skills",
+			"observation": "Worker's skillFeedback notes that the service-worker skill could mention @mendable/firecrawl-js v4 uses different method names than v1 (scrape vs scrapeUrl, crawl vs crawlUrl). The research doc at .factory/research/firecrawl.md uses v4 method names, but the skill's example code in the procedure section was already correct. The discrepancy is between the research doc's stated 'Latest version: 4.15.0' and the actual installed '^4.15.1'. Minor, but the skill could note the v1→v4 migration if workers might encounter older examples online.",
+			"evidence": "handoff.skillFeedback.suggestedChanges: 'The service-worker skill could mention that @mendable/firecrawl-js v4 uses different method names than v1 (scrape vs scrapeUrl, crawl vs crawlUrl) — the research doc references v1 method names.'"
+		},
+		{
+			"area": "conventions",
+			"observation": "The pnpm catalog uses exact versions for all 40+ entries except @mendable/firecrawl-js which uses a caret range (^4.15.1). AGENTS.md documents 'pnpm workspaces with catalog for shared dependency versions' but doesn't specify whether exact or range versions should be used. A convention note could prevent future inconsistency.",
+			"evidence": "pnpm-workspace.yaml — all other entries use exact versions (e.g., 'effect: 3.19.19', '@ai-sdk/google: 3.0.36') while '@mendable/firecrawl-js: ^4.15.1' uses caret range."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "The firecrawl-service feature passes review. Implementation follows all Effect service patterns established in the codebase: GenericTag, TaggedError, domain types, Config-based API key, Layer.effect, and barrel export. The service is properly integrated into AiToolkitLive. 9 tests comprehensively cover happy paths, ConfigError, and error handling. Two non-blocking issues noted: (1) caret version range in catalog is inconsistent with other exact-version entries, and (2) test coverage of the Live layer's actual error mapping could be stronger, though this follows the project's mocking conventions."
+}

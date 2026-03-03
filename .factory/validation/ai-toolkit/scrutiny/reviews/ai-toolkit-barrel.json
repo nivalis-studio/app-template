@@ -1,0 +1,39 @@
+{
+	"featureId": "ai-toolkit-barrel",
+	"reviewedAt": "2026-03-03T00:15:00.000Z",
+	"commitId": "371ce20a52c8488c599b5f5af14a9ed46fc16342",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation. AiToolkitLive correctly composes all 6 service layers using Layer.mergeAll with GoogleAuth as shared dependency for Google services via Layer.provideMerge. Barrel index.ts re-exports all 6 services, GoogleAuth, all error types, all domain types, and AiToolkitLive. Tests cover layer compilation, all 6 services availability, and ConfigError propagation for 3 different config keys (exceeding the 2-minimum requirement). No hardcoded API keys — all services use Config.string(). SDK imports (googleapis, @ai-sdk/*, @mendable/firecrawl-js) are confined to implementation files and do not appear in index.ts.",
+		"issues": [
+			{
+				"file": "packages/ai/src/__tests__/toolkit.test.ts",
+				"line": 95,
+				"severity": "non_blocking",
+				"description": "ConfigError tests only assert exit._tag === 'Failure' without verifying the error is specifically a ConfigError (e.g., via Cause inspection). Since config is the only failure path in these tests (no network calls), this is functionally correct but less precise than it could be."
+			},
+			{
+				"file": "packages/ai/src/google-auth.ts",
+				"line": 24,
+				"severity": "non_blocking",
+				"description": "GoogleAuthClient type exposes 'client: GoogleOAuthClient' where GoogleOAuthClient is InstanceType<typeof google.auth.OAuth2> — an SDK-derived type. This leaks the googleapis type through the public API. However, this appears to be an intentional design decision (the auth client's purpose is to provide the OAuth2 client for Google API calls), and GoogleOAuthClient itself is not exported."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "conventions",
+			"observation": "AGENTS.md references '.factory/library/effect-patterns.md' for Effect.ts patterns but the .factory/library/ directory does not exist and contains no files. Workers have no centralized reference for Effect patterns beyond the skill file's inline example.",
+			"evidence": "AGENTS.md line 'See .factory/library/effect-patterns.md and .factory/research/effect-nextjs.md' — Glob for .factory/library/**/* returns no matching files. .factory/research/ directory is also empty."
+		},
+		{
+			"area": "conventions",
+			"observation": "The Layer composition pattern used in toolkit.ts (Layer.mergeAll + Layer.provideMerge for shared dependencies) is a valuable reusable pattern not documented anywhere in shared state. Future workers building similar composed layers would benefit from this being captured.",
+			"evidence": "packages/ai/src/toolkit.ts:47-51 — GoogleServicesLive pattern using Layer.mergeAll(...).pipe(Layer.provideMerge(GoogleAuthLive))"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "Pass. The implementation fully satisfies all 7 requirements: (1) barrel re-exports all services, auth, errors, and domain types; (2) AiToolkitLive composes all 6 layers with shared GoogleAuth; (3) all services have typed errors via Data.TaggedError; (4) all services read API keys from Config.string(); (5) 3 ConfigError tests (exceeds the 2 minimum); (6) layer compilation test passes; (7) SDK types confined to implementation files (minor: GoogleAuthClient wraps SDK type by design). Two non-blocking issues noted: ConfigError assertions could be more specific, and GoogleAuthClient exposes an SDK-derived type intentionally."
+}

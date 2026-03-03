@@ -1,0 +1,28 @@
+{
+	"featureId": "mistral-ocr-service",
+	"reviewedAt": "2026-03-03T00:15:00.000Z",
+	"commitId": "0a9e5a7c9ad0187fff4486e8fe342c4616c61152",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Clean implementation following established Effect service patterns. The MistralOcrService is well-structured with Context.GenericTag, Data.TaggedError, domain types (OcrResult, OcrUsage), and a live layer reading MISTRAL_API_KEY from Config. Uses @ai-sdk/mistral with pixtral-large-latest model via generateText for vision-based OCR. 8 tests cover happy paths, ConfigError, error wrapping, and live layer construction. All expected exports are in the barrel. AiToolkitLive already includes MistralOcrLive. One non-blocking code smell identified.",
+		"issues": [
+			{
+				"file": "packages/ai/src/mistral-ocr.ts",
+				"line": 139,
+				"severity": "non_blocking",
+				"description": "Dead conditional branch: both sides of the ternary `input instanceof URL ? { type: 'file' as const, data: input, mediaType } : { type: 'file' as const, data: input, mediaType }` produce identical objects. The conditional is meaningless — the code works correctly but reads as if the developer intended to differentiate URL vs Buffer handling and forgot to do so. Should be simplified to a single object literal: `const filePart = { type: 'file' as const, data: input, mediaType };`."
+			},
+			{
+				"file": "packages/ai/src/__tests__/mistral-ocr.test.ts",
+				"line": 131,
+				"severity": "non_blocking",
+				"description": "ConfigError test only asserts `exit._tag === 'Failure'` without verifying the specific error type is ConfigError. While sufficient for basic coverage, a more precise assertion (e.g., checking Cause.squash produces a ConfigError) would make the test more robust and prevent false passes if the failure reason changes."
+			}
+		]
+	},
+	"sharedStateObservations": [],
+	"addressesFailureFrom": null,
+	"summary": "The mistral-ocr-service feature passes review. The implementation correctly follows the established Effect service pattern (matching firecrawl.ts closely), exports all required types and layers, adds @ai-sdk/mistral to the pnpm catalog and package dependencies, and includes 8 well-structured tests. The service is already integrated into AiToolkitLive. Two non-blocking issues identified: a dead conditional branch in filePart construction and a loosely-typed ConfigError assertion in tests. Neither impacts correctness."
+}

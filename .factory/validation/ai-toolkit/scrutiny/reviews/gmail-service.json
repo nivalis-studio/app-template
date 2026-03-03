@@ -1,0 +1,40 @@
+{
+	"featureId": "gmail-service",
+	"reviewedAt": "2026-03-03T00:10:00.000Z",
+	"commitId": "cd3a1afbdf9deb90cede4ca2676b38a05eda668d",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Gmail service implementation is clean, well-structured, and follows the established pattern from GoogleCalendar and GoogleSheets services precisely. All 3 required methods (send, list, get) are implemented with correct signatures. GmailError is defined via Data.TaggedError. Domain types (SentEmail, EmailMessage, SendEmailOptions) are properly exported. GmailLive depends on GoogleAuth. 12 tests cover all methods, error handling, error type properties, GoogleAuth dependency, and mock layer usage. The service is correctly integrated into the AiToolkitLive composite layer in toolkit.ts. Barrel exports are complete and alphabetically ordered.",
+		"issues": [
+			{
+				"file": "packages/ai/src/gmail.ts",
+				"line": 168,
+				"severity": "non_blocking",
+				"description": "The makeRawEmail helper does not include a 'From:' header in the RFC 2822 message. While Gmail automatically fills this from the authenticated sender, an explicit From header would make the message more RFC-compliant and enable the sender to be verified in tests."
+			},
+			{
+				"file": "packages/ai/src/gmail.ts",
+				"line": 259,
+				"severity": "non_blocking",
+				"description": "The list method uses Promise.all inside Effect.tryPromise to fetch full details for each message ref. For large result sets this fires all get requests in parallel, which could hit Gmail API rate limits. A more Effect-idiomatic approach would use Effect.forEach with a concurrency option. However, this is consistent with the pattern used in other Google services and the default maxResults of 20 makes rate limiting unlikely in practice."
+			},
+			{
+				"file": "packages/ai/src/gmail.ts",
+				"line": 250,
+				"severity": "non_blocking",
+				"description": "If a message is deleted between the list call (which returns message refs) and the individual get call (which fetches full details), the entire list operation fails. Consider using Effect.forEach with { concurrency: 'inherit' } and Effect.option to gracefully skip deleted messages. Low severity since this is an unlikely race condition."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "skills",
+			"observation": "The service-worker skill's TDD step 4b says 'Test that missing API key produces ConfigError', but Google services that depend on GoogleAuth don't read config directly — they get the auth client from GoogleAuth. The Gmail tests correctly mock GoogleAuth instead of testing ConfigError, but the skill procedure could be clearer that step 4b only applies to standalone services (Firecrawl, MistralOcr, GeminiPdf), not Google services.",
+			"evidence": "SKILL.md step 4b: 'Test that missing API key produces ConfigError'. Gmail tests mock GoogleAuth instead, which is correct behavior. GoogleCalendar and GoogleSheets tests follow the same pattern of mocking GoogleAuth."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "PASS. The Gmail service implementation is complete, follows established patterns, and meets all expectedBehavior criteria. 12 tests pass covering all 3 methods (send, list, get), error handling, domain type mapping, GoogleAuth dependency, and mock layer usage. The service is properly integrated into AiToolkitLive. Three non-blocking issues noted: missing From header in RFC 2822 construction, Promise.all for parallel message fetching in list, and potential race condition on deleted messages. None are blocking."
+}
