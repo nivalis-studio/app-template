@@ -73,3 +73,5 @@ export {
   type OcrResult,
   type OcrUsage,
 } from './mistral-ocr.js';
+// Composed layer (all 6 services)
+export { AiToolkitLive } from './toolkit.js';
