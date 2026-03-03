@@ -28,6 +28,16 @@ export {
   type PdfExtractionUsage,
   type PdfPageInfo,
 } from './gemini-pdf.js';
+// Gmail (email operations)
+export {
+  type EmailMessage,
+  GmailError,
+  GmailLive,
+  GmailService,
+  type GmailServiceShape,
+  type SendEmailOptions,
+  type SentEmail,
+} from './gmail.js';
 // Google Auth (shared dependency for Google services)
 export {
   GoogleAuth,
