@@ -1,81 +1,64 @@
 {
 	"milestone": "app-shell",
-	"round": 1,
+	"round": 2,
 	"status": "fail",
 	"assertionsSummary": {
-		"total": 23,
-		"passed": 14,
-		"failed": 1,
-		"blocked": 8
+		"total": 9,
+		"passed": 0,
+		"failed": 0,
+		"blocked": 9
 	},
-	"passedAssertions": [
-		"VAL-SHELL-001",
-		"VAL-SHELL-002",
-		"VAL-SHELL-003",
-		"VAL-SHELL-005",
-		"VAL-SHELL-007",
-		"VAL-SHELL-008",
-		"VAL-SHELL-012",
-		"VAL-SHELL-014",
-		"VAL-SHELL-015",
-		"VAL-SHELL-016",
-		"VAL-SHELL-017",
-		"VAL-CROSS-002",
-		"VAL-CROSS-007",
-		"VAL-CROSS-008"
-	],
-	"failedAssertions": [
-		{
-			"id": "VAL-SHELL-004",
-			"reason": "Better-Auth config missing emailAndPassword: { enabled: true }. Sign-up API returns HTTP 400 with EMAIL_PASSWORD_SIGN_UP_DISABLED."
-		}
-	],
+	"passedAssertions": [],
+	"failedAssertions": [],
 	"blockedAssertions": [
 		{
+			"id": "VAL-SHELL-004",
+			"blockedBy": "Neon DB authentication failure (P1000): credentials expired or invalid. Auth code fix verified (emailAndPassword: { enabled: true }) but cannot test sign-up flow without database."
+		},
+		{
 			"id": "VAL-SHELL-006",
-			"blockedBy": "Auth broken: emailAndPassword not enabled in Better-Auth config"
+			"blockedBy": "Neon DB authentication failure (P1000): cannot create test account to verify login flow."
 		},
 		{
 			"id": "VAL-SHELL-009",
-			"blockedBy": "Auth broken: cannot access authenticated dashboard"
+			"blockedBy": "Neon DB authentication failure (P1000): cannot authenticate to access dashboard layout."
 		},
 		{
 			"id": "VAL-SHELL-010",
-			"blockedBy": "Auth broken: cannot access /dashboard/chat"
+			"blockedBy": "Neon DB authentication failure (P1000): cannot authenticate to access /dashboard/chat."
 		},
 		{
 			"id": "VAL-SHELL-011",
-			"blockedBy": "Auth broken: cannot test message sending in dashboard"
+			"blockedBy": "Neon DB authentication failure (P1000): cannot authenticate to test chat message sending."
 		},
 		{
 			"id": "VAL-SHELL-013",
-			"blockedBy": "Auth broken: cannot test sign-out without successful login"
+			"blockedBy": "Neon DB authentication failure (P1000): cannot authenticate to test sign-out flow."
 		},
 		{
 			"id": "VAL-CROSS-003",
-			"blockedBy": "Auth broken: full user flow blocked at authentication step"
+			"blockedBy": "Neon DB authentication failure (P1000): full user flow (landing → sign-up → dashboard → sign-out → sign-in) requires working database."
 		},
 		{
 			"id": "VAL-CROSS-004",
-			"blockedBy": "Auth broken: AI chat end-to-end blocked by dashboard inaccessibility"
+			"blockedBy": "Neon DB authentication failure (P1000): AI chat end-to-end requires authenticated dashboard access."
 		},
 		{
 			"id": "VAL-CROSS-005",
-			"blockedBy": "Auth broken: session persistence untestable without authentication"
+			"blockedBy": "Neon DB authentication failure (P1000): session persistence test requires working authentication."
 		}
 	],
 	"appliedUpdates": [
 		{
 			"target": "user-testing.md",
-			"description": "Added Flow Validator Guidance: App Shell Browser Testing section with browser session naming, test account assignments, isolation rules, and testing approach details",
-			"source": "setup"
-		},
-		{
-			"target": "user-testing.md",
-			"description": "Documented critical quirks: turbo dev env var passthrough issue, Better-Auth emailAndPassword not enabled, BETTER_AUTH_SECRET missing from root .env",
+			"description": "Documented Neon DB authentication failure (P1000) as blocking issue. Updated known quirks with credential expiry details.",
 			"source": "setup"
 		}
 	],
-	"rootCause": "Better-Auth configuration in apps/web/src/lib/auth.ts is missing `emailAndPassword: { enabled: true }`. This single config gap causes ALL email/password auth endpoints to reject requests, blocking 9 out of 23 assertions (1 failed + 8 blocked). The fix is to add `emailAndPassword: { enabled: true }` to the betterAuth() config object.",
-	"previousRound": null
+	"rootCause": "Neon PostgreSQL cloud database credentials in .env have expired or are invalid. Prisma returns P1000 ('Authentication failed against the database server, the provided database credentials are not valid'). The auth code fix (emailAndPassword: { enabled: true }) and turbo env passthrough fix are both verified in source code, but all 9 assertions requiring authentication are blocked by the external database being inaccessible. This is NOT an application code issue — it requires refreshing the Neon DB credentials in .env.",
+	"codeFixesVerified": {
+		"emailAndPassword": "Confirmed enabled in apps/web/src/lib/auth.ts",
+		"turboEnvPassthrough": "Confirmed globalPassThroughEnv in turbo.json includes DATABASE_URL, BETTER_AUTH_SECRET, and all other env vars"
+	},
+	"previousRound": ".factory/validation/app-shell/user-testing/synthesis.json (round 1)"
 }

@@ -40,7 +40,8 @@ Testing surface, tools, URLs, setup steps, and known quirks.
 - BETTER_AUTH_SECRET must be set or app crashes on startup
 - AI chat requires OPENAI_API_KEY to actually generate responses
 - **CRITICAL**: turbo dev does not pass env vars through to Next.js properly. Must start Next.js directly: `cd apps/web && DATABASE_URL=... BETTER_AUTH_SECRET=dev-secret npx next dev`
-- **CRITICAL**: Better-Auth config in `apps/web/src/lib/auth.ts` is missing `emailAndPassword: { enabled: true }`. Sign-up/sign-in API endpoints return "Email and password sign up is not enabled" (HTTP 400). Auth flows will fail until this is fixed.
+- **RESOLVED**: Better-Auth config in `apps/web/src/lib/auth.ts` now has `emailAndPassword: { enabled: true }`. This was fixed in commit 41ecc53.
+- **CRITICAL**: Neon PostgreSQL cloud database credentials in .env have expired or are invalid. Prisma returns P1000 ("Authentication failed against the database server, the provided database credentials are not valid"). All auth-dependent flows (sign-up, sign-in, dashboard access, sign-out) will fail until valid Neon DB credentials are provided. This is NOT an application code issue — the auth code is correct.
 - The root .env has DATABASE_URL and DATABASE_URL_POOLER but NOT BETTER_AUTH_SECRET — that must be provided explicitly
 
 ## Flow Validator Guidance: Foundation Infrastructure
