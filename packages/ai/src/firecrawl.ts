@@ -235,16 +235,20 @@ export const FirecrawlLive = Layer.effect(
       extract: (url: string, options?: ExtractOptions) =>
         Effect.tryPromise({
           try: async () => {
-            const result = await client.extract({
-              urls: [url],
-              prompt: options?.prompt,
-              schema: options?.schema,
+            const doc = await client.scrape(url, {
+              formats: [
+                {
+                  type: 'json' as const,
+                  schema: options?.schema,
+                  prompt: options?.prompt,
+                },
+              ],
             });
 
             return {
-              success: result.success ?? true,
-              data: result.data,
-              warning: result.warning,
+              success: true,
+              data: doc.json,
+              warning: doc.warning,
             } satisfies ExtractedData;
           },
           catch: error =>
