@@ -39,6 +39,9 @@ Testing surface, tools, URLs, setup steps, and known quirks.
 - Neon DB credentials in .env may expire (check DATE_URL comment)
 - BETTER_AUTH_SECRET must be set or app crashes on startup
 - AI chat requires OPENAI_API_KEY to actually generate responses
+- **CRITICAL**: turbo dev does not pass env vars through to Next.js properly. Must start Next.js directly: `cd apps/web && DATABASE_URL=... BETTER_AUTH_SECRET=dev-secret npx next dev`
+- **CRITICAL**: Better-Auth config in `apps/web/src/lib/auth.ts` is missing `emailAndPassword: { enabled: true }`. Sign-up/sign-in API endpoints return "Email and password sign up is not enabled" (HTTP 400). Auth flows will fail until this is fixed.
+- The root .env has DATABASE_URL and DATABASE_URL_POOLER but NOT BETTER_AUTH_SECRET — that must be provided explicitly
 
 ## Flow Validator Guidance: Foundation Infrastructure
 
@@ -99,3 +102,52 @@ packages/ai/src/
 - Run turbo commands from: /Users/pnodet/git/nivalis/app-template
 - `BETTER_AUTH_SECRET=dev-secret` needed for build commands involving apps/web
 - `DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder` for build placeholders
+
+## Flow Validator Guidance: App Shell Browser Testing
+
+App Shell milestone assertions require browser-based testing via `agent-browser` skill.
+
+### Environment
+- Dev server is running at http://localhost:3000 with BETTER_AUTH_SECRET=dev-secret
+- Database: Neon PostgreSQL (cloud) — .env has DATABASE_URL
+- OPENAI_API_KEY may not be set — AI chat testing should verify structure renders, not expect real AI responses
+
+### Isolation Rules
+- Each subagent gets a **unique browser session** (use --session flag)
+- Each subagent gets a **unique test account** (different email addresses)
+- Do NOT create accounts using another subagent's email
+- Do NOT sign out of another subagent's session
+- Do NOT restart the dev server or modify any source files
+- For sign-up testing: create a fresh account with the assigned email, then verify redirect
+- For login testing: use a pre-created account with the assigned email
+
+### Browser Session Naming
+- Group 1 (Landing): `--session "d1ab075ff926__landing"`
+- Group 2 (Auth Forms): `--session "d1ab075ff926__auth"`
+- Group 3 (Dashboard): `--session "d1ab075ff926__dash"`
+- Group 4 (AI Chat): `--session "d1ab075ff926__chat"`
+
+### Test Account Assignments
+- Group 2 (Auth Forms): testuser1@example.com / TestPassword123!
+- Group 3 (Dashboard): testuser2@example.com / TestPassword123!
+- Group 4 (AI Chat): testuser3@example.com / TestPassword123!
+
+### Testing Approach
+- Use `agent-browser` skill for all browser-based assertions
+- Invoke `agent-browser` via the Skill tool at session start
+- Navigate to URLs, take screenshots, check DOM elements
+- For API checks, use curl commands directly
+- For code structure checks (VAL-CROSS-007, VAL-CROSS-008, VAL-SHELL-012), use Read/Grep tools
+
+### Known Behavior
+- Protected routes (/dashboard, /dashboard/chat) redirect to /sign-in when unauthenticated
+- Sign-up: POST /api/auth/sign-up/email with JSON body {name, email, password}
+- Sign-in: POST /api/auth/sign-in/email with JSON body {email, password}
+- Sign-out: POST /api/auth/sign-out
+- Auth uses cookies for session management
+- If OPENAI_API_KEY is missing, the chat API route should return a helpful error message, not crash
+- The 404 page is Next.js's default or custom not-found.tsx
+
+### Build Verification
+- For VAL-CROSS-002 (production build): run `BETTER_AUTH_SECRET=dev-secret DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder pnpm build` from repo root
+- Build command should exit 0

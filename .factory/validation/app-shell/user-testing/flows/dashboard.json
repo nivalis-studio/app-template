@@ -1,0 +1,173 @@
+{
+	"groupId": "dashboard",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "testuser2@example.com",
+		"namespace": "dashboard"
+	},
+	"toolsUsed": ["agent-browser", "curl"],
+	"assertions": {
+		"VAL-SHELL-006": {
+			"status": "blocked",
+			"steps": [
+				{
+					"action": "Navigate to /sign-in",
+					"expected": "Login form displayed",
+					"observed": "Login form displayed with Email, Password fields and Sign In button"
+				},
+				{
+					"action": "Fill email: testuser2@example.com",
+					"expected": "Field populated",
+					"observed": "Field populated"
+				},
+				{
+					"action": "Fill password: TestPassword123!",
+					"expected": "Field populated",
+					"observed": "Field populated"
+				},
+				{
+					"action": "Click Sign In",
+					"expected": "Redirect to /dashboard",
+					"observed": "Stayed on /sign-in with error 'Invalid email or password'"
+				}
+			],
+			"evidence": {
+				"screenshots": ["/tmp/dash-006-login-attempt.png"],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 {\"message\":\"Email and password is not enabled\",\"code\":\"EMAIL_PASSWORD_DISABLED\"}"
+			},
+			"issues": [
+				"Better-Auth config is missing emailAndPassword: { enabled: true } in apps/web/src/lib/auth.ts. The API returns HTTP 400 with EMAIL_PASSWORD_DISABLED. UI shows 'Invalid email or password' error message."
+			]
+		},
+		"VAL-SHELL-008": {
+			"status": "pass",
+			"steps": [
+				{
+					"action": "curl -sS -o /dev/null -w '%{http_code} %{redirect_url}' http://localhost:3000/dashboard",
+					"expected": "302/307 redirect to /sign-in",
+					"observed": "307 http://localhost:3000/sign-in"
+				},
+				{
+					"action": "Navigate browser to http://localhost:3000/dashboard",
+					"expected": "Redirect to /sign-in",
+					"observed": "Redirected to http://localhost:3000/sign-in, sign-in form displayed"
+				}
+			],
+			"evidence": {
+				"screenshots": ["/tmp/dash-008-redirect.png"],
+				"consoleErrors": "none",
+				"network": "GET /dashboard -> 307 redirect to /sign-in"
+			},
+			"issues": []
+		},
+		"VAL-SHELL-009": {
+			"status": "blocked",
+			"steps": [
+				{
+					"action": "Attempted login to access dashboard",
+					"expected": "Authentication succeeds, dashboard renders with sidebar",
+					"observed": "Login failed due to EMAIL_PASSWORD_DISABLED - cannot access authenticated dashboard"
+				}
+			],
+			"evidence": {
+				"screenshots": ["/tmp/dash-006-login-attempt.png"],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 EMAIL_PASSWORD_DISABLED"
+			},
+			"issues": [
+				"Cannot test dashboard layout because authentication is broken. Better-Auth emailAndPassword is not enabled."
+			]
+		},
+		"VAL-SHELL-013": {
+			"status": "blocked",
+			"steps": [
+				{
+					"action": "Attempted login to test sign-out flow",
+					"expected": "Login succeeds, then sign-out can be tested",
+					"observed": "Login failed due to EMAIL_PASSWORD_DISABLED - cannot reach sign-out"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 EMAIL_PASSWORD_DISABLED"
+			},
+			"issues": [
+				"Cannot test sign-out because login is blocked. Better-Auth emailAndPassword is not enabled."
+			]
+		},
+		"VAL-SHELL-015": {
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Check for loading.tsx files under apps/web/src/app/dashboard/",
+					"expected": "At least one loading.tsx file exists",
+					"observed": "Found 2 loading.tsx files: dashboard/loading.tsx and dashboard/chat/loading.tsx"
+				},
+				{
+					"action": "Verify loading.tsx content has skeleton/spinner components",
+					"expected": "Loading states render skeleton UI",
+					"observed": "dashboard/loading.tsx renders Skeleton components (3 cards grid), dashboard/chat/loading.tsx renders chat-layout skeletons"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a",
+				"fileCheck": "apps/web/src/app/dashboard/loading.tsx exists with Skeleton components; apps/web/src/app/dashboard/chat/loading.tsx exists with Skeleton components"
+			},
+			"issues": []
+		},
+		"VAL-CROSS-003": {
+			"status": "blocked",
+			"steps": [
+				{
+					"action": "Attempted full flow: landing -> sign-up -> dashboard -> sign-out -> sign-in -> dashboard",
+					"expected": "Complete end-to-end user flow",
+					"observed": "Cannot proceed past authentication step - Better-Auth emailAndPassword is disabled"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 EMAIL_PASSWORD_DISABLED"
+			},
+			"issues": [
+				"Full user flow blocked because authentication (both sign-up and sign-in) is disabled. Better-Auth config missing emailAndPassword: { enabled: true }."
+			]
+		},
+		"VAL-CROSS-005": {
+			"status": "blocked",
+			"steps": [
+				{
+					"action": "Attempted login to test session persistence",
+					"expected": "Login succeeds, then navigate between dashboard pages to verify session persistence",
+					"observed": "Login failed due to EMAIL_PASSWORD_DISABLED - cannot establish session"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 EMAIL_PASSWORD_DISABLED"
+			},
+			"issues": [
+				"Cannot test session persistence because login is blocked. Better-Auth emailAndPassword is not enabled."
+			]
+		}
+	},
+	"frictions": [],
+	"blockers": [
+		{
+			"description": "Better-Auth config in apps/web/src/lib/auth.ts is missing emailAndPassword: { enabled: true }. All auth API endpoints (sign-in, sign-up) return HTTP 400 with code EMAIL_PASSWORD_DISABLED. This blocks all assertions requiring authentication.",
+			"affectedAssertions": [
+				"VAL-SHELL-006",
+				"VAL-SHELL-009",
+				"VAL-SHELL-013",
+				"VAL-CROSS-003",
+				"VAL-CROSS-005"
+			],
+			"quickFixAttempted": "Verified via curl (POST /api/auth/sign-in/email -> 400) and browser (form submission shows 'Invalid email or password'). Confirmed emailAndPassword grep returns no matches in auth.ts. Not permitted to modify source files."
+		}
+	],
+	"summary": "Tested 7 assertions: 2 passed (VAL-SHELL-008 protected route redirect, VAL-SHELL-015 loading states), 5 blocked (VAL-SHELL-006, VAL-SHELL-009, VAL-SHELL-013, VAL-CROSS-003, VAL-CROSS-005 — all blocked by Better-Auth emailAndPassword not being enabled)."
+}

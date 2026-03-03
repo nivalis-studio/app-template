@@ -1,0 +1,165 @@
+{
+	"groupId": "auth-forms",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "testuser1@example.com",
+		"namespace": "auth-forms"
+	},
+	"toolsUsed": ["agent-browser", "curl"],
+	"assertions": {
+		"VAL-SHELL-003": {
+			"status": "pass",
+			"title": "Sign-up page renders form",
+			"steps": [
+				{
+					"action": "Navigate to /sign-up",
+					"expected": "Sign-up form displayed",
+					"observed": "Sign-up form displayed with 'Create an account' heading"
+				},
+				{
+					"action": "Check form fields",
+					"expected": "Name, email, password fields and submit button",
+					"observed": "Found textbox 'Name', textbox 'Email', textbox 'Password', button 'Sign Up', link 'Sign in'"
+				}
+			],
+			"evidence": {
+				"screenshots": ["signup-form.png"],
+				"consoleErrors": "none",
+				"network": "GET /sign-up -> 200"
+			},
+			"issues": []
+		},
+		"VAL-SHELL-004": {
+			"status": "fail",
+			"title": "Sign-up successful flow",
+			"steps": [
+				{
+					"action": "Navigate to /sign-up",
+					"expected": "Sign-up form displayed",
+					"observed": "Sign-up form displayed"
+				},
+				{
+					"action": "Fill name 'Test User One', email 'testuser1@example.com', password 'TestPassword123!'",
+					"expected": "Fields populated",
+					"observed": "Fields populated"
+				},
+				{
+					"action": "Click Sign Up button",
+					"expected": "POST /api/auth/sign-up/email -> 200, redirect to /dashboard",
+					"observed": "POST /api/auth/sign-up/email -> 400, error message 'Email and password sign up is not enabled'"
+				},
+				{
+					"action": "Check URL after submit",
+					"expected": "Redirected to /dashboard",
+					"observed": "Stayed on /sign-up, error banner displayed"
+				}
+			],
+			"evidence": {
+				"screenshots": ["signup-after-submit.png"],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-up/email -> 400 {\"message\":\"Email and password sign up is not enabled\",\"code\":\"EMAIL_PASSWORD_SIGN_UP_DISABLED\"}"
+			},
+			"issues": [
+				"KNOWN ISSUE: Better-Auth config in apps/web/src/lib/auth.ts is missing emailAndPassword: { enabled: true }. The sign-up API endpoint returns HTTP 400 with 'Email and password sign up is not enabled'. User cannot sign up via email/password until this config is added."
+			]
+		},
+		"VAL-SHELL-005": {
+			"status": "pass",
+			"title": "Login page renders form",
+			"steps": [
+				{
+					"action": "Navigate to /sign-in",
+					"expected": "Login form displayed",
+					"observed": "Login form displayed with 'Welcome back' heading"
+				},
+				{
+					"action": "Check form fields",
+					"expected": "Email, password fields, submit button, link to sign-up",
+					"observed": "Found textbox 'Email', textbox 'Password', button 'Sign In', link 'Sign up' pointing to /sign-up"
+				}
+			],
+			"evidence": {
+				"screenshots": ["signin-form.png"],
+				"consoleErrors": "none",
+				"network": "GET /sign-in -> 200"
+			},
+			"issues": []
+		},
+		"VAL-SHELL-007": {
+			"status": "pass",
+			"title": "Login invalid credentials shows generic error",
+			"steps": [
+				{
+					"action": "Navigate to /sign-in",
+					"expected": "Login form displayed",
+					"observed": "Login form displayed"
+				},
+				{
+					"action": "Fill email 'nonexistent@example.com', password 'WrongPassword123!'",
+					"expected": "Fields populated",
+					"observed": "Fields populated"
+				},
+				{
+					"action": "Click Sign In button",
+					"expected": "Generic error message without distinguishing email vs password",
+					"observed": "Error message 'Invalid email or password' displayed — generic, does not reveal which field is wrong"
+				}
+			],
+			"evidence": {
+				"screenshots": ["signin-invalid-creds.png"],
+				"consoleErrors": "none",
+				"network": "POST /api/auth/sign-in/email -> 400 {\"message\":\"Email and password is not enabled\",\"code\":\"EMAIL_PASSWORD_DISABLED\"}"
+			},
+			"issues": [
+				"NOTE: The underlying API returns 'Email and password is not enabled' (400) due to missing Better-Auth emailAndPassword config, but the UI correctly maps this to a generic 'Invalid email or password' message. The assertion passes because the UI behavior matches spec (generic error), though the root cause of the error is a config issue, not actual credential validation."
+			]
+		},
+		"VAL-SHELL-017": {
+			"status": "pass",
+			"title": "Auth forms show validation errors",
+			"steps": [
+				{
+					"action": "Navigate to /sign-up, submit empty form",
+					"expected": "Required field errors shown",
+					"observed": "Errors displayed: 'Name is required', 'Email is required', 'Password is required'"
+				},
+				{
+					"action": "Fill invalid email 'not-an-email' and short password 'short', submit",
+					"expected": "Format-specific validation errors",
+					"observed": "Errors displayed: 'Please enter a valid email address', 'Password must be at least 8 characters'"
+				},
+				{
+					"action": "Navigate to /sign-in, submit empty form",
+					"expected": "Required field errors shown",
+					"observed": "Errors displayed: 'Email is required', 'Password is required'"
+				},
+				{
+					"action": "Fill invalid email 'bad-email' on sign-in, submit",
+					"expected": "Email format error",
+					"observed": "Error displayed: 'Please enter a valid email address'"
+				}
+			],
+			"evidence": {
+				"screenshots": [
+					"signup-empty-submit.png",
+					"signup-format-errors.png",
+					"signin-empty-submit.png",
+					"signin-format-errors.png"
+				],
+				"consoleErrors": "none",
+				"network": "N/A (client-side validation prevents submission)"
+			},
+			"issues": []
+		}
+	},
+	"frictions": [
+		{
+			"description": "agent-browser 'click' on form submit button does not trigger React's onSubmit handler for controlled forms. Had to use eval with dispatchEvent to submit forms for validation testing.",
+			"resolved": true,
+			"resolution": "Used agent-browser eval to dispatch submit event directly: document.querySelector('#form-id').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))",
+			"affectedAssertions": ["VAL-SHELL-017"]
+		}
+	],
+	"blockers": [],
+	"summary": "Tested 5 assertions: 4 passed, 1 failed. VAL-SHELL-003 (sign-up form renders) PASS. VAL-SHELL-004 (sign-up flow) FAIL — Better-Auth emailAndPassword not enabled, API returns 400. VAL-SHELL-005 (sign-in form renders) PASS. VAL-SHELL-007 (invalid credentials generic error) PASS — UI shows 'Invalid email or password'. VAL-SHELL-017 (client-side validation) PASS — both forms show required, email format, and password length errors."
+}

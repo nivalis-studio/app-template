@@ -1,0 +1,122 @@
+{
+	"groupId": "landing",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "none",
+		"namespace": "unauthenticated"
+	},
+	"toolsUsed": ["agent-browser"],
+	"assertions": {
+		"VAL-SHELL-001": {
+			"status": "pass",
+			"evidence": "Screenshot landing-page-desktop.png shows hero heading 'Build AI-Powered Tools, Fast', description paragraph, two CTA buttons ('Get Started' linking to /sign-up, 'Sign In' linking to /sign-in), three feature cards, and footer. No blank screen. Console errors: none.",
+			"steps": [
+				{
+					"action": "Navigate to http://localhost:3000",
+					"expected": "Landing page renders",
+					"observed": "Landing page rendered with hero section"
+				},
+				{
+					"action": "Check accessibility tree",
+					"expected": "h1 heading, description, CTA links",
+					"observed": "h1 'Build AI-Powered Tools, Fast', paragraph description, 'Get Started' link (/sign-up), 'Sign In' link (/sign-in)"
+				},
+				{
+					"action": "Take screenshot",
+					"expected": "Visual confirmation of layout",
+					"observed": "landing-page-desktop.png captured, shows hero + features + footer"
+				},
+				{
+					"action": "Check console errors",
+					"expected": "No errors",
+					"observed": "No console errors"
+				}
+			],
+			"issues": []
+		},
+		"VAL-SHELL-002": {
+			"status": "pass",
+			"evidence": "Screenshot sign-up-page.png confirms 'Get Started' navigates to /sign-up (renders 'Create an account' form). Screenshot sign-in-page.png confirms 'Sign In' navigates to /sign-in (renders 'Welcome back' form). Both pages render valid content, no 404.",
+			"steps": [
+				{
+					"action": "Verify 'Get Started' href",
+					"expected": "/sign-up",
+					"observed": "href='/sign-up'"
+				},
+				{
+					"action": "Verify 'Sign In' href",
+					"expected": "/sign-in",
+					"observed": "href='/sign-in'"
+				},
+				{
+					"action": "Click 'Get Started'",
+					"expected": "Navigate to /sign-up",
+					"observed": "URL changed to http://localhost:3000/sign-up, sign-up form rendered"
+				},
+				{
+					"action": "Navigate back, click 'Sign In'",
+					"expected": "Navigate to /sign-in",
+					"observed": "URL changed to http://localhost:3000/sign-in, sign-in form rendered"
+				}
+			],
+			"issues": []
+		},
+		"VAL-SHELL-014": {
+			"status": "pass",
+			"evidence": "Screenshot 404-page.png shows '404' heading and 'This page could not be found.' message. curl confirms HTTP 404 status code. Page title includes '404 Not Found'.",
+			"steps": [
+				{
+					"action": "Navigate to http://localhost:3000/nonexistent",
+					"expected": "404 page renders",
+					"observed": "Page titled '404 Not Found | create next app' rendered"
+				},
+				{
+					"action": "Check accessibility tree",
+					"expected": "404 content visible",
+					"observed": "h1 '404', h2 'This page could not be found.'"
+				},
+				{
+					"action": "curl http://localhost:3000/nonexistent",
+					"expected": "HTTP 404",
+					"observed": "HTTP status code 404"
+				},
+				{
+					"action": "Take screenshot",
+					"expected": "Visual confirmation",
+					"observed": "404-page.png shows 404 message"
+				}
+			],
+			"issues": []
+		},
+		"VAL-SHELL-016": {
+			"status": "pass",
+			"evidence": "Screenshots at 3 viewports: landing-mobile-375.png (375x812) shows stacked single-column layout with hero, CTA buttons, and vertically stacked feature cards. landing-tablet-768.png (768x1024) shows full layout with 3-column feature cards. landing-desktop-1280.png (1280x800) shows full layout with footer visible. No horizontal overflow at any viewport (verified via JS: scrollWidth <= clientWidth returns true for all 3).",
+			"steps": [
+				{
+					"action": "Set viewport to 375x812 (mobile)",
+					"expected": "Content stacks vertically, no overflow",
+					"observed": "Single-column layout, feature cards stacked, no horizontal scroll"
+				},
+				{
+					"action": "Set viewport to 768x1024 (tablet)",
+					"expected": "Layout adapts, no overflow",
+					"observed": "3-column feature cards, centered hero, no horizontal scroll"
+				},
+				{
+					"action": "Set viewport to 1280x800 (desktop)",
+					"expected": "Full layout, no overflow",
+					"observed": "Full layout with footer, 3-column cards, no horizontal scroll"
+				},
+				{
+					"action": "Check horizontal overflow (JS)",
+					"expected": "scrollWidth <= clientWidth at all sizes",
+					"observed": "true for all 3 viewports"
+				}
+			],
+			"issues": []
+		}
+	},
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 4 assertions: all 4 passed. Landing page renders hero, CTA links, and features correctly. Navigation links resolve to valid auth routes. 404 page works for unknown routes. Responsive layout works at mobile (375px), tablet (768px), and desktop (1280px) with no horizontal overflow."
+}
