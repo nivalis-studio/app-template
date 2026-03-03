@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   cacheComponents: true,
   typedRoutes: true,
+
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

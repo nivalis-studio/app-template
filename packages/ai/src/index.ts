@@ -3,7 +3,7 @@
  */
 
 // Errors
-export { GoogleAuthError } from './errors.js';
+export { GoogleAuthError } from './errors.ts';
 // Firecrawl (web scraping)
 export {
   type CrawledPage,
@@ -17,7 +17,7 @@ export {
   type FirecrawlServiceShape,
   type ScrapedPage,
   type ScrapedPageMetadata,
-} from './firecrawl.js';
+} from './firecrawl.ts';
 // Gemini PDF (document extraction)
 export {
   GeminiPdfError,
@@ -27,7 +27,7 @@ export {
   type PdfExtractionResult,
   type PdfExtractionUsage,
   type PdfPageInfo,
-} from './gemini-pdf.js';
+} from './gemini-pdf.ts';
 // Gmail (email operations)
 export {
   type EmailMessage,
@@ -37,14 +37,14 @@ export {
   type GmailServiceShape,
   type SendEmailOptions,
   type SentEmail,
-} from './gmail.js';
+} from './gmail.ts';
 // Google Auth (shared dependency for Google services)
 export {
   GoogleAuth,
   type GoogleAuthClient,
   GoogleAuthLive,
   type GoogleAuthService,
-} from './google-auth.js';
+} from './google-auth.ts';
 // Google Calendar (calendar operations)
 export {
   type CalendarEvent,
@@ -55,7 +55,7 @@ export {
   GoogleCalendarService,
   type GoogleCalendarServiceShape,
   type TimeRange,
-} from './google-calendar.js';
+} from './google-calendar.ts';
 // Google Sheets (spreadsheet operations)
 export {
   GoogleSheetsError,
@@ -63,7 +63,7 @@ export {
   GoogleSheetsService,
   type GoogleSheetsServiceShape,
   type SheetData,
-} from './google-sheets.js';
+} from './google-sheets.ts';
 // Mistral OCR (document processing)
 export {
   MistralOcrError,
@@ -72,6 +72,6 @@ export {
   type MistralOcrServiceShape,
   type OcrResult,
   type OcrUsage,
-} from './mistral-ocr.js';
+} from './mistral-ocr.ts';
 // Composed layer (all 6 services)
-export { AiToolkitLive } from './toolkit.js';
+export { AiToolkitLive } from './toolkit.ts';

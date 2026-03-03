@@ -10,7 +10,7 @@
  */
 import { Config, Context, Effect, Layer } from 'effect';
 import { google } from 'googleapis';
-import { GoogleAuthError } from './errors.js';
+import { GoogleAuthError } from './errors.ts';
 
 /**
  * The Google auth client type derived from the googleapis library.

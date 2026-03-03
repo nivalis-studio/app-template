@@ -8,12 +8,12 @@ export {
   ServiceError,
   UnauthorizedError,
   ValidationError,
-} from './errors.js';
+} from './errors.ts';
 // Effect layer composition
 export {
   composeLayers,
   makeEffectServiceLayer,
   makeServiceLayer,
-} from './layers.js';
+} from './layers.ts';
 // Effect runtime
-export { makeRuntime } from './runtime.js';
+export { makeRuntime } from './runtime.ts';

@@ -22,7 +22,7 @@
  */
 import { Context, Data, Effect, Layer } from 'effect';
 import { google } from 'googleapis';
-import { GoogleAuth } from './google-auth.js';
+import { GoogleAuth } from './google-auth.ts';
 
 // ---------------------------------------------------------------------------
 // Domain types

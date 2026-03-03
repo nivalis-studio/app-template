@@ -31,13 +31,13 @@
  * ```
  */
 import { Layer } from 'effect';
-import { FirecrawlLive } from './firecrawl.js';
-import { GeminiPdfLive } from './gemini-pdf.js';
-import { GmailLive } from './gmail.js';
-import { GoogleAuthLive } from './google-auth.js';
-import { GoogleCalendarLive } from './google-calendar.js';
-import { GoogleSheetsLive } from './google-sheets.js';
-import { MistralOcrLive } from './mistral-ocr.js';
+import { FirecrawlLive } from './firecrawl.ts';
+import { GeminiPdfLive } from './gemini-pdf.ts';
+import { GmailLive } from './gmail.ts';
+import { GoogleAuthLive } from './google-auth.ts';
+import { GoogleCalendarLive } from './google-calendar.ts';
+import { GoogleSheetsLive } from './google-sheets.ts';
+import { MistralOcrLive } from './mistral-ocr.ts';
 
 /**
  * Google services composed with their shared GoogleAuth dependency.
