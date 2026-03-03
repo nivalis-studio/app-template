@@ -49,7 +49,8 @@ Architectural decisions, patterns, and conventions for the Nivalis app template.
 
 - Project uses `ai@6.x` and `@ai-sdk/react@3.x` — the v6 API.
 - **useChat**: Use `sendMessage({text: "..."})` (not `handleSubmit`). Messages use `message.parts` array (not `message.content` string). Filter parts by `p.type === 'text'` for text content.
-- **streamText tools**: Use `inputSchema` (not `parameters`) for Zod schema in `tool()` definitions. Set `maxSteps >= 2` to enable automatic follow-up after tool execution.
+- **streamText tools**: Use `inputSchema` (not `parameters`) for Zod schema in `tool()` definitions. Use `stopWhen: stepCountIs(N)` (not the deprecated `maxSteps`) to enable automatic follow-up after tool execution. Import `stepCountIs` from `'ai'`.
+- **shadcn data-slot targeting**: shadcn/ui components expose internal sub-elements via `data-slot` attributes (e.g., `[data-slot="scroll-area-viewport"]` for ScrollArea's viewport). Use `querySelector('[data-slot="..."]')` when you need to programmatically access component internals.
 - **Streaming response**: Use `result.toUIMessageStreamResponse()` to return streaming responses from API routes.
 
 ## Deployment

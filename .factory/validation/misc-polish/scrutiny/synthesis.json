@@ -1,0 +1,54 @@
+{
+	"milestone": "misc-polish",
+	"round": 1,
+	"status": "pass",
+	"validatorsRun": {
+		"test": {
+			"passed": true,
+			"command": "pnpm test",
+			"exitCode": 0,
+			"details": "110 tests across 13 test files (4 in utils, 8 in ai, 1 in web) — all passing"
+		},
+		"typecheck": {
+			"passed": true,
+			"command": "pnpm ts",
+			"exitCode": 0,
+			"details": "TypeScript passes across all 3 packages (utils, ai, web)"
+		},
+		"lint": {
+			"passed": true,
+			"command": "pnpm lint",
+			"exitCode": 0,
+			"details": "Biome check passes across all 3 packages — 94 files checked, no issues"
+		}
+	},
+	"reviewsSummary": {
+		"total": 1,
+		"passed": 1,
+		"failed": 0,
+		"failedFeatures": []
+	},
+	"blockingIssues": [],
+	"appliedUpdates": [
+		{
+			"target": "library",
+			"description": "Updated .factory/library/architecture.md: fixed outdated 'maxSteps >= 2' to 'stopWhen: stepCountIs(N)' to reflect AI SDK v6 breaking change. Added shadcn data-slot targeting pattern documentation.",
+			"sourceFeature": "misc-foundation-polish"
+		}
+	],
+	"suggestedGuidanceUpdates": [
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Add accessibility convention: all custom interactive elements (links, buttons outside shadcn) should use the focus-visible ring pattern: focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background. This ensures consistent keyboard navigation accessibility.",
+			"evidence": "Feature misc-foundation-polish added this pattern to landing page CTA links (apps/web/src/app/page.tsx). The pattern isn't documented as a project-wide convention yet.",
+			"isSystemic": false
+		}
+	],
+	"rejectedObservations": [
+		{
+			"observation": "shadcn data-slot convention should be added to AGENTS.md",
+			"reason": "Applied as library factual knowledge instead — it's a codebase discovery, not a normative rule. Added to .factory/library/architecture.md under Vercel AI SDK section."
+		}
+	],
+	"previousRound": null
+}

@@ -1,0 +1,44 @@
+{
+	"featureId": "misc-foundation-polish",
+	"reviewedAt": "2026-03-03T06:25:00.000Z",
+	"commitId": "0f9bd2d5c9d3e3512853ce6458518cf8e913f919",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "All 10 polish items in the feature description are correctly addressed across 14 files. The implementation is clean, follows project conventions, and includes thorough testing. No blocking issues found.",
+		"issues": [
+			{
+				"file": "packages/utils/src/invariant.ts",
+				"line": 43,
+				"severity": "non_blocking",
+				"description": "slugify() strips unicode/accented characters rather than normalizing them (e.g., 'café' → 'caf'). A more robust implementation would use Unicode normalization (NFD decomposition + strip combining marks) before the regex. The test at invariant.test.ts:57 documents this behavior explicitly, so it's an intentional tradeoff, but worth noting for future improvement."
+			},
+			{
+				"file": "apps/web/src/components/chat-interface.tsx",
+				"line": 23,
+				"severity": "non_blocking",
+				"description": "Using `messages.at(-1)?.parts` (an array reference) as a useEffect dependency relies on the AI SDK creating new array references during streaming. This works correctly with AI SDK v6's immutable update pattern, but is implicit coupling. If the SDK ever switched to mutable updates, auto-scroll would break silently. A more robust approach could use a message content hash or length, but this is the idiomatic pattern for AI SDK."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "knowledge",
+			"observation": "The feature description specified 'Add maxSteps: 2 to streamText()' but AI SDK v6 replaced maxSteps with stopWhen: stepCountIs(N). The worker correctly adapted, but the skill feedback confirms this API discrepancy. The .factory/research/ directory or library docs should note AI SDK v6 breaking changes (maxSteps → stopWhen/stepCountIs) to prevent future confusion.",
+			"evidence": "Feature description says 'Add maxSteps: 2', worker used stopWhen: stepCountIs(2) instead. handoff.skillFeedback.suggestedChanges confirms: 'AI SDK v6 replaced maxSteps with stopWhen: stepCountIs(N)'"
+		},
+		{
+			"area": "conventions",
+			"observation": "shadcn/ui components use data-slot attributes for targeting internal sub-elements (e.g., [data-slot='scroll-area-viewport'] for ScrollArea's viewport). This pattern is used in chat-interface.tsx but isn't documented in AGENTS.md or library. Workers implementing scroll behavior or targeting shadcn internals need to know this.",
+			"evidence": "apps/web/src/components/chat-interface.tsx:29 — querySelector('[data-slot=\"scroll-area-viewport\"]')"
+		},
+		{
+			"area": "conventions",
+			"observation": "Focus-visible ring pattern for interactive elements (focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background) is now established on the landing page CTA links. This accessibility pattern should be consistently applied to all custom interactive elements, but isn't documented as a convention in AGENTS.md.",
+			"evidence": "apps/web/src/app/page.tsx — both Link elements now use this pattern"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "PASS. All 10 polish items are correctly implemented: (1) invariant() and slugify() added to @nivalis/utils with 10 unit tests and barrel re-export; (2) sendDefaultPii set to false for GDPR; (3) consistent || undefined coercion for all optional env vars; (4) exact version 4.15.1 for @mendable/firecrawl-js; (5) dead ternaries simplified in gemini-pdf.ts and mistral-ocr.ts; (6) globalPassThroughEnv confirmed present in turbo.json; (7) chat auto-scroll targets ScrollArea viewport with streaming deps; (8) stopWhen: stepCountIs(2) added for tool call follow-ups; (9) focus-visible ring styles on landing CTA links; (10) auth form errors cleared onChange. Two non-blocking issues: slugify doesn't normalize unicode, and auto-scroll depends on SDK array reference identity. Verification commands (turbo ts, lint, test) all passed with 0 errors."
+}
