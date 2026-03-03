@@ -1,0 +1,117 @@
+{
+	"milestone": "app-shell",
+	"round": 1,
+	"status": "pass",
+	"validatorsRun": {
+		"test": {
+			"passed": true,
+			"command": "pnpm test",
+			"exitCode": 0,
+			"details": "100 tests passed across 12 test files (3 packages: @nivalis/utils 12 tests, @nivalis/ai 73 tests, @nivalis/web 15 tests)"
+		},
+		"typecheck": {
+			"passed": true,
+			"command": "pnpm ts",
+			"exitCode": 0,
+			"details": "All 3 packages typecheck cleanly (turbo ts exits 0)"
+		},
+		"lint": {
+			"passed": true,
+			"command": "pnpm lint",
+			"exitCode": 0,
+			"details": "All 3 packages pass biome check (92 files checked total)"
+		}
+	},
+	"reviewsSummary": {
+		"total": 5,
+		"passed": 5,
+		"failed": 0,
+		"failedFeatures": []
+	},
+	"blockingIssues": [],
+	"nonBlockingIssues": [
+		{
+			"featureId": "landing-page",
+			"severity": "non_blocking",
+			"description": "CTA Link elements lack focus-visible ring styles for keyboard navigation accessibility. Inline Tailwind classes don't include focus-visible:border-ring focus-visible:ring-3 etc."
+		},
+		{
+			"featureId": "landing-page",
+			"severity": "non_blocking",
+			"description": "Inconsistent font usage: body inherits font-mono from root, but heading/buttons explicitly set font-sans. Description paragraph renders in mono."
+		},
+		{
+			"featureId": "auth-pages",
+			"severity": "non_blocking",
+			"description": "Field validation errors only clear on next form submission, not when user starts editing. Minor UX friction."
+		},
+		{
+			"featureId": "dashboard-layout",
+			"severity": "non_blocking",
+			"description": "Dashboard page.tsx fetches session again redundantly (layout.tsx already validates). Next.js may deduplicate, but pattern could be cleaner."
+		},
+		{
+			"featureId": "dashboard-layout",
+			"severity": "non_blocking",
+			"description": "global-error.tsx uses hardcoded color classes instead of semantic Tailwind classes for Try Again button, inconsistent with error.tsx."
+		},
+		{
+			"featureId": "ai-chat-interface",
+			"severity": "non_blocking",
+			"description": "Auto-scroll ref targets ScrollArea Root instead of Viewport — scrollTop on Root has no effect since Viewport is the scrollable element."
+		},
+		{
+			"featureId": "ai-chat-interface",
+			"severity": "non_blocking",
+			"description": "Auto-scroll only triggers on message count change, not during streaming. Long streaming responses require manual scrolling."
+		},
+		{
+			"featureId": "ai-chat-interface",
+			"severity": "non_blocking",
+			"description": "No maxSteps configured in streamText(). The scrapeWebPage tool executes but the model can't auto-generate a follow-up response after tool result."
+		},
+		{
+			"featureId": "ai-chat-interface",
+			"severity": "non_blocking",
+			"description": "No try/catch around req.json() in chat API route. Malformed JSON would result in unhandled 500 error."
+		}
+	],
+	"appliedUpdates": [
+		{
+			"target": "library",
+			"description": "Added .ts extension convention, dual-layer auth architecture, shadcn/ui conventions (post-install lint fixes, biome-ignore, use client boundary), and Vercel AI SDK v6 API patterns to architecture.md",
+			"sourceFeature": "ai-chat-interface, dashboard-layout, shadcn-components, landing-page"
+		}
+	],
+	"suggestedGuidanceUpdates": [
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Add guidance on when TDD can be relaxed: static server components with no logic, layout/routing features best verified via build + browser testing, and integration-heavy features requiring extensive mocking. Currently AGENTS.md says 'TDD: write tests first, then implement' without exceptions.",
+			"evidence": "Three features (landing-page, dashboard-layout, ai-chat-interface) all deviated from TDD with justified reasoning. Pattern is systemic across frontend features.",
+			"isSystemic": true
+		},
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Document the biome-ignore convention: when suppressing Biome rules in generated code (e.g., shadcn components), always provide a justification comment. Example: `// biome-ignore lint/a11y/noLabelWithoutControl: shadcn Label uses htmlFor via composition`",
+			"evidence": "shadcn-components feature needed multiple biome-ignore comments. Convention not documented in AGENTS.md.",
+			"isSystemic": false
+		},
+		{
+			"target": "skills",
+			"suggestion": "Update frontend-worker skill to: (1) mention that shadcn-generated components need biome lint fixes after installation, (2) note the `use client` boundary limitation with buttonVariants in server components, (3) update AI SDK code examples to use v6 API (sendMessage, message.parts, inputSchema, toUIMessageStreamResponse), (4) clarify when TDD step can be relaxed for frontend features.",
+			"evidence": "All 5 app-shell features reported skill deviations. AI SDK v6 API is completely different from v3 patterns in skill. Three workers independently deviated from TDD step.",
+			"isSystemic": true
+		}
+	],
+	"rejectedObservations": [
+		{
+			"observation": "Page component export style (default arrow function vs named function declaration) should be standardized in AGENTS.md",
+			"reason": "ambiguous — both patterns are valid React conventions. Not worth standardizing; would add friction without clear benefit."
+		},
+		{
+			"observation": "Email regex in auth-validation.ts is minimal (accepts 'a@b.c')",
+			"reason": "already-documented — reviewer noted this is acceptable for client-side pre-validation since server validates definitively. Not worth changing."
+		}
+	],
+	"previousRound": null
+}

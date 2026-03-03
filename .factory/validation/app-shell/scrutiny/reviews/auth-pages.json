@@ -1,0 +1,51 @@
+{
+	"featureId": "auth-pages",
+	"reviewedAt": "2026-03-03T01:00:00.000Z",
+	"commitId": "defd7040e19073517719fb827bd2d8f0d90f1fd5",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation of auth pages covering all feature requirements. Sign-up page has name/email/password fields with client-side validation and authClient.signUp.email() call. Sign-in page has email/password with validation and authClient.signIn.email() call. Both pages cross-link correctly. Sign-out utility calls authClient.signOut() and redirects to /. Validation logic is cleanly extracted into a testable module with 15 unit tests covering required fields, email format, password min length, whitespace edge cases, and simultaneous error reporting. Uses shadcn Card, Button, Input, Label components as required. Loading states and error handling are properly implemented. Code follows project conventions (Biome formatting, import aliases, 'use client' directives).",
+		"issues": [
+			{
+				"file": "apps/web/src/app/sign-in/page.tsx",
+				"line": null,
+				"severity": "non_blocking",
+				"description": "Field validation errors persist after user starts editing a field — errors only clear on next form submission. Minor UX friction; users expect inline errors to disappear when they begin correcting a field."
+			},
+			{
+				"file": "apps/web/src/app/sign-up/page.tsx",
+				"line": null,
+				"severity": "non_blocking",
+				"description": "Same UX issue as sign-in: field errors not cleared on input change, only on next submit."
+			},
+			{
+				"file": "apps/web/src/lib/auth-validation.ts",
+				"line": 13,
+				"severity": "non_blocking",
+				"description": "EMAIL_REGEX (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/) is minimal — accepts patterns like 'a@b.c'. Acceptable for client-side pre-validation since server validates definitively, but could be slightly stricter."
+			},
+			{
+				"file": "apps/web/src/lib/sign-out.ts",
+				"line": 9,
+				"severity": "non_blocking",
+				"description": "Uses window.location.href = '/' for redirect after sign-out instead of Next.js router.push(). This is actually a good pattern — full page reload clears client-side auth state/caches — but it's a deliberate choice worth noting for consistency documentation."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "conventions",
+			"observation": "The sign-out utility uses window.location.href for a full page reload after signout (to clear client-side state), while sign-in/sign-up use router.push() for post-auth redirects. This dual-redirect pattern is intentional but not documented in AGENTS.md. Future workers implementing protected route redirects may be unsure which approach to use.",
+			"evidence": "apps/web/src/lib/sign-out.ts:9 uses window.location.href='/'; apps/web/src/app/sign-in/page.tsx:55 uses router.push('/dashboard'). Both are correct for their context but the reasoning isn't captured anywhere."
+		},
+		{
+			"area": "conventions",
+			"observation": "Auth page components are exported as default arrow function expressions (const SignInPage = () => { ... }; export default SignInPage) rather than named function declarations. This is consistent within the auth feature but AGENTS.md doesn't specify a preference for page component export style.",
+			"evidence": "apps/web/src/app/sign-in/page.tsx:24 — const SignInPage = () => { ... }; line 144 — export default SignInPage"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "The auth-pages feature passes review. All 5 files (sign-in page, sign-up page, auth-validation utility, sign-out utility, and validation tests) correctly implement the feature requirements: forms with proper fields, client-side validation with extracted testable logic, Better-Auth integration for sign-up/sign-in/sign-out, cross-links between pages, error handling, and loading states. 15 unit tests provide thorough coverage of validation logic. No blocking issues found. Minor UX improvements possible (clearing field errors on input change) and the dual redirect pattern (router.push vs window.location.href) could be documented as a convention."
+}

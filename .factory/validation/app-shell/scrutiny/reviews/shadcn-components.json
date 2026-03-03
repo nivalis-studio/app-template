@@ -1,0 +1,26 @@
+{
+	"featureId": "shadcn-components",
+	"reviewedAt": "2026-03-03T02:30:00.000Z",
+	"commitId": "8651289c0a2081363029bea7c8b193d018b05e0c",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "All 9 requested shadcn/ui components (button, input, label, card, separator, sheet, avatar, dropdown-menu, sidebar) were installed correctly along with 3 auto-dependencies (skeleton, tooltip, use-mobile hook). All components use cn() from @/lib/classnames as required. The components.json config is correctly set up with base-nova style, RSC enabled, correct alias mappings (utils → @/lib/classnames, ui → @/components/ui, hooks → @/hooks). Components use @base-ui/react primitives consistent with the base-nova style. Biome lint fixes were applied properly with appropriate biome-ignore comments where suppression was needed (label a11y rule, document.cookie usage). Magic numbers were extracted to named constants (DAYS_IN_WEEK, SIDEBAR_COOKIE_MAX_AGE, MOBILE_BREAKPOINT, etc.) for biome compliance. Build, typecheck, lint, and tests all pass. Clean, standard shadcn component installation with appropriate post-install lint fixes.",
+		"issues": []
+	},
+	"sharedStateObservations": [
+		{
+			"area": "skills",
+			"observation": "Worker's skillFeedback suggests that the frontend-worker skill should mention that shadcn-generated components often need biome lint fixes after installation (namespace imports → named imports, variable shadowing, magic numbers, a11y suppressions). This is a recurring pattern that future workers will encounter.",
+			"evidence": "Handoff skillFeedback.suggestedChanges: 'The frontend-worker skill could mention that shadcn components may need biome lint fixes after installation since the generated code doesn't conform to strict biome rules'. The worker had to fix namespace imports, extract magic numbers to constants, and add biome-ignore comments for label a11y and document.cookie usage."
+		},
+		{
+			"area": "conventions",
+			"observation": "The biome-ignore patterns used for shadcn components (noLabelWithoutControl for Label, noDocumentCookie for sidebar state persistence) are reasonable and well-documented, but AGENTS.md doesn't mention the convention for when/how to use biome-ignore comments. Future workers may handle these differently.",
+			"evidence": "label.tsx:8 has biome-ignore lint/a11y/noLabelWithoutControl with explanation. sidebar.tsx:95 has biome-ignore lint/suspicious/noDocumentCookie with explanation. Both are correct suppressions but the convention of providing a justification comment isn't documented."
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "PASS. All 9 requested shadcn/ui components plus 3 auto-dependencies installed correctly in apps/web/src/components/ui/. Components follow base-nova style using @base-ui/react primitives, import cn() from @/lib/classnames, and use project theme variables. components.json config is correct. Biome lint issues in generated code were properly fixed. All validators (build, ts, lint, test) pass. No blocking issues found."
+}

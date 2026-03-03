@@ -1,0 +1,56 @@
+{
+	"featureId": "dashboard-layout",
+	"reviewedAt": "2026-03-03T01:15:00.000Z",
+	"commitId": "d10f127535fd834a526f252f09120a0511012050",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "Solid implementation covering all 7 requirements. Dashboard layout uses shadcn sidebar with SidebarProvider, SidebarInset, and SidebarTrigger for responsive collapse. AppSidebar client component has Dashboard/Chat nav links, user info display with avatar initials, and sign-out via DropdownMenu. Protected routes use dual-layer auth: proxy.ts middleware does a fast cookie check for /dashboard/:path*, and layout.tsx does a full server-side session validation via auth.api.getSession(). Loading skeleton, dashboard home page with welcome message, and error.tsx/global-error.tsx fixes with reset+Try Again button are all present and correct. The removed metadata export from error.tsx (a client component) was a valid fix since client components cannot export metadata in Next.js App Router.",
+		"issues": [
+			{
+				"file": "apps/web/src/components/app-sidebar.tsx",
+				"line": 50,
+				"severity": "non_blocking",
+				"description": "The initials computation `user.name.split(' ').map(n => n[0])` will throw if user.name is an empty string, since split('') returns [''] and n[0] is undefined — however .join('').toUpperCase().slice(0,2) gracefully produces '' in that case. Not a crash risk, but produces an empty avatar fallback. A minor edge case."
+			},
+			{
+				"file": "apps/web/src/app/dashboard/page.tsx",
+				"line": 10,
+				"severity": "non_blocking",
+				"description": "DashboardPage fetches session again via auth.api.getSession() even though layout.tsx already validates the session and confirms the user is authenticated. This is a redundant server call. Next.js does deduplicate fetch requests within a render pass when using the same headers() call, so the performance cost is likely minimal, but the pattern could be improved by passing user data via React context or a shared async component."
+			},
+			{
+				"file": "apps/web/src/app/global-error.tsx",
+				"line": 25,
+				"severity": "non_blocking",
+				"description": "global-error.tsx uses hardcoded color classes (bg-neutral-800, text-neutral-50, dark:bg-neutral-100) for the Try Again button instead of semantic Tailwind classes (bg-primary, text-primary-foreground) used in error.tsx. This creates an inconsistency between the two error pages. Since global-error.tsx wraps its own <html>/<body> and can't rely on the app's CSS theme being loaded, this is understandable but worth noting."
+			},
+			{
+				"file": "apps/web/src/proxy.ts",
+				"line": 4,
+				"severity": "non_blocking",
+				"description": "The proxy middleware checks for cookie name 'better-auth.session_token' as a hardcoded string. If Better-Auth ever changes its default cookie name, or if a custom cookie name is configured, this would silently break. The dual-layer auth (layout.tsx does full session validation) mitigates the risk — an expired/invalid cookie would pass the middleware but be caught by the layout. This is an acceptable tradeoff for middleware performance."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "conventions",
+			"observation": "The dual-layer auth pattern (fast cookie check in proxy.ts middleware + full session validation in layout.tsx) is a key architectural decision not documented in AGENTS.md. Future workers may not understand why both layers exist or might remove one thinking it's redundant.",
+			"evidence": "apps/web/src/proxy.ts checks cookie existence only; apps/web/src/app/dashboard/layout.tsx:15-20 does full auth.api.getSession(). AGENTS.md mentions 'Session check in middleware via proxy.ts' but doesn't explain the dual-layer pattern or why the middleware only does a cookie check."
+		},
+		{
+			"area": "conventions",
+			"observation": "The hardcoded cookie name 'better-auth.session_token' in proxy.ts is a magic string that could be documented in AGENTS.md or library to prevent breakage if Better-Auth config changes.",
+			"evidence": "apps/web/src/proxy.ts:4 — hardcoded string 'better-auth.session_token'"
+		},
+		{
+			"area": "skills",
+			"observation": "Worker deviated from TDD step (step 4 in frontend-worker skill) by not writing tests first. The deviation is justified — dashboard layout/sidebar are server+client components best verified via build + browser testing. The skill's TDD requirement should note that for layout/routing features, build + browser verification is acceptable.",
+			"evidence": "Handoff skillFeedback.deviations confirms: 'Relied on build/ts/lint/test validation and browser testing instead of writing new unit tests'. Worker's suggestedChanges: 'The TDD step should note that for layout/routing features, build + browser verification is more appropriate than unit tests.'"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "Feature passes review. All 7 requirements are implemented: dashboard layout with shadcn sidebar, AppSidebar with nav links and user info, responsive collapse via SidebarTrigger, dual-layer protected routes (proxy.ts cookie check + layout.tsx session validation), loading.tsx skeleton, dashboard home page with welcome message, and error.tsx/global-error.tsx fixes with reset prop and Try Again button. Build, TypeScript, lint, and tests all pass. Browser verification confirmed auth redirect works for unauthenticated users. Four non-blocking issues noted: empty-name edge case in initials, redundant session fetch in page.tsx, inconsistent button styling between error pages, and hardcoded cookie name in proxy.ts. None are blocking."
+}

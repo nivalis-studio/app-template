@@ -28,6 +28,29 @@ Architectural decisions, patterns, and conventions for the Nivalis app template.
 - ESM throughout (`"type": "module"`)
 - Import alias: `@/*` → `./src/*` in apps/web
 - Workspace protocol: `"workspace:*"` for internal packages
+- **TypeScript extensions**: Internal package imports use `.ts` extensions with `allowImportingTsExtensions: true` in tsconfig. Use `.ts` (not `.js`) for all internal imports in `packages/ai/src/` and `packages/utils/src/`.
+
+## Authentication Architecture
+
+- **Dual-layer auth for protected routes**:
+  1. `apps/web/src/proxy.ts` (middleware): Fast cookie existence check for `better-auth.session_token`. Redirects to `/sign-in` if cookie is absent. This is a performance optimization — no server-side session validation.
+  2. `apps/web/src/app/dashboard/layout.tsx`: Full server-side session validation via `auth.api.getSession()`. Redirects to `/sign-in` if session is invalid/expired.
+- Both layers are necessary: middleware prevents unauthenticated requests from reaching React rendering; layout catches expired/invalid sessions.
+- **Redirect patterns**: Use `router.push()` for post-login redirects (SPA navigation). Use `window.location.href` for post-signout (full page reload clears client-side auth state/caches).
+- **Cookie name**: Better-Auth default session cookie is `better-auth.session_token` (hardcoded in proxy.ts).
+
+## shadcn/ui Conventions
+
+- **Post-install lint fixes**: shadcn-generated components often need Biome lint fixes after installation (namespace imports → named imports, variable shadowing, magic numbers as named constants, a11y suppressions). Always run `pnpm lint:fix` after installing new components.
+- **biome-ignore comments**: When suppressing Biome rules in generated code, always provide a justification comment explaining why (e.g., `// biome-ignore lint/a11y/noLabelWithoutControl: shadcn Label uses htmlFor via composition`).
+- **`use client` boundary**: shadcn `buttonVariants` is exported from a `'use client'` module (`button.tsx`). It cannot be imported in server components. For styled Links in server components, either inline the Tailwind classes matching the variant or use a thin client wrapper component.
+
+## Vercel AI SDK (v6)
+
+- Project uses `ai@6.x` and `@ai-sdk/react@3.x` — the v6 API.
+- **useChat**: Use `sendMessage({text: "..."})` (not `handleSubmit`). Messages use `message.parts` array (not `message.content` string). Filter parts by `p.type === 'text'` for text content.
+- **streamText tools**: Use `inputSchema` (not `parameters`) for Zod schema in `tool()` definitions. Set `maxSteps >= 2` to enable automatic follow-up after tool execution.
+- **Streaming response**: Use `result.toUIMessageStreamResponse()` to return streaming responses from API routes.
 
 ## Deployment
 

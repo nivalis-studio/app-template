@@ -1,0 +1,50 @@
+{
+	"featureId": "landing-page",
+	"reviewedAt": "2026-03-03T01:45:00.000Z",
+	"commitId": "c5b06f51e2be7ad9b947ccf6f31afa6aef463558",
+	"transcriptSkeletonReviewed": true,
+	"diffReviewed": true,
+	"status": "pass",
+	"codeReview": {
+		"summary": "The landing page implementation fully meets the feature requirements. It has a hero section with the correct heading, description, and two CTA buttons linking to /sign-up and /sign-in; a features section with 3 cards using shadcn Card components in a responsive grid; and a simple footer. The page is a server component, uses CSS variables for dark theme, and is responsive across breakpoints. The only notable deviation is inlining button styles instead of using shadcn's buttonVariants — justified because button.tsx is a 'use client' module and buttonVariants cannot be imported into a server component in Next.js 16. The inlined styles closely match the shadcn button variants but lack focus-visible and accessibility states present in the real component. This is non-blocking for a landing page but worth noting.",
+		"issues": [
+			{
+				"file": "apps/web/src/app/page.tsx",
+				"line": 46,
+				"severity": "non_blocking",
+				"description": "CTA Link elements use inline Tailwind classes instead of shadcn Button/buttonVariants. The inline styles lack focus-visible ring styles (focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50), shrink-0, select-none, whitespace-nowrap, and disabled states that the actual buttonVariants provide. This means keyboard navigation users won't see a visible focus indicator on these CTAs. A potential fix: extract buttonVariants into a shared non-'use client' module, or wrap the Links in a thin client component that uses Button with asChild."
+			},
+			{
+				"file": "apps/web/src/app/page.tsx",
+				"line": 51,
+				"severity": "non_blocking",
+				"description": "The 'Sign In' Link uses 'border-input' directly, but the actual outline buttonVariants uses 'border-border' in light mode and 'dark:border-input dark:bg-input/30 dark:hover:bg-input/50' for dark. Since the app defaults to dark class, the visual result may be close, but the styles will drift if the button component is updated."
+			},
+			{
+				"file": "apps/web/src/app/page.tsx",
+				"line": 34,
+				"severity": "non_blocking",
+				"description": "The root layout uses 'font-mono' as the default font class on <html>, but the hero heading and buttons explicitly add 'font-sans'. This works but means the body text (description paragraph) inherits the mono font. The description uses 'text-muted-foreground' but does not set font-sans, so it renders in mono. This may be intentional design, but inconsistent with the heading and buttons using sans."
+			}
+		]
+	},
+	"sharedStateObservations": [
+		{
+			"area": "conventions",
+			"observation": "Worker inlined Tailwind classes matching buttonVariants on Link elements because buttonVariants is exported from a 'use client' module (button.tsx) and cannot be imported in a server component in Next.js 16. AGENTS.md says 'Use shadcn/ui components — never build custom UI when shadcn has it', but doesn't document this server-component limitation or the recommended workaround (extracting buttonVariants to a shared file, or wrapping in a client component).",
+			"evidence": "apps/web/src/app/page.tsx lines 44-57 use inline classes. apps/web/src/components/ui/button.tsx has 'use client' at top. Worker's skillFeedback.suggestedChanges explains the limitation."
+		},
+		{
+			"area": "skills",
+			"observation": "The frontend-worker skill procedure doesn't mention the 'use client' boundary issue when using buttonVariants in server components. The worker's skillFeedback suggests updating the skill to note that buttonVariants cannot be imported in server components with Next.js 16. This is a real limitation — the skill should recommend either extracting buttonVariants into a separate non-client module or using a thin client wrapper component for styled Links.",
+			"evidence": "SKILL.md step 5 says 'Use shadcn/ui components' without caveats. Worker skillFeedback.suggestedChanges: 'The skill should note that buttonVariants cannot be used in server components with Next.js 16 due to the use client boundary on the button component.'"
+		},
+		{
+			"area": "conventions",
+			"observation": "No tests were written for the landing page. The skill procedure says 'Write tests first (TDD)' but the worker skipped this, citing that the page is pure static JSX with no logic. The justification is reasonable for a static server component, but AGENTS.md's TDD convention doesn't carve out exceptions for static pages. Consider documenting when TDD is expected vs. when it can be skipped (e.g., static server components with no logic).",
+			"evidence": "Handoff tests.added is empty. Skill step 4 says 'Write tests first (TDD)'. Worker deviation: 'The landing page is a pure server component with only static JSX content and no logic, state, or side effects to test.'"
+		}
+	],
+	"addressesFailureFrom": null,
+	"summary": "The landing page feature passes review. All required elements are present: hero section with heading and CTAs, 3 feature cards with shadcn Card components, responsive grid layout, dark theme, and footer. Build/TS/lint/test all pass. The worker performed thorough verification including responsive checks at 375px, 768px, and 1280px viewports. The main deviation — inlining button styles instead of using buttonVariants — is a justified workaround for the 'use client' boundary in Next.js 16 server components. Three non-blocking issues noted: missing focus-visible styles on CTA links (accessibility), minor style drift from actual buttonVariants for the outline variant, and inconsistent font usage (mono body vs sans headings/buttons). No blocking issues found."
+}
