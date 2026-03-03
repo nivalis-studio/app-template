@@ -1,27 +1,122 @@
-## @nivalis/app-template
+# Nivalis App Template
 
-### Monorepo layout
+Monorepo template for building AI-powered tools fast. Ships with auth, database, AI connectors, and a polished UI — ready to deploy on Vercel.
 
-```text
+## Tech Stack
+
+- **Framework**: Next.js 16 (React 19, Turbopack)
+- **Services**: Effect.ts (typed errors, layers, dependency injection)
+- **AI**: Vercel AI SDK + provider packages (`@ai-sdk/google`, `@ai-sdk/mistral`, `@ai-sdk/openai`)
+- **Auth**: Better-Auth (email/password, OAuth)
+- **Database**: Prisma + Neon (serverless Postgres)
+- **Styling**: Tailwind CSS v4, shadcn/ui
+- **Monitoring**: Sentry
+- **Testing**: Vitest
+- **Linting**: Biome
+- **Monorepo**: pnpm workspaces + Turborepo
+
+## Monorepo Structure
+
+```
 apps/
-  web/    # next.js app template
-packages/ # shared packages (coming next)
+  web/              → Next.js app (pages, auth, API routes, UI)
+packages/
+  ai/               → AI connectors as Effect services
+  utils/            → Shared utilities
 ```
 
-### Install
+## AI Connectors (`@nivalis/ai`)
+
+All connectors are Effect services with typed errors, live layers, and a composed `AiToolkitLive` layer.
+
+| Connector | Description |
+|-----------|-------------|
+| **Firecrawl** | Web scraping — scrape, crawl, and extract structured data from URLs |
+| **Mistral OCR** | Document OCR via Pixtral Large — extract text from PDFs and images |
+| **Gemini PDF** | PDF extraction via Gemini 2.5 Flash — text, structure, and page info |
+| **Google Sheets** | Read, write, and append rows to spreadsheets |
+| **Google Calendar** | List, create, update, and delete calendar events |
+| **Gmail** | Send emails, list messages, get message details |
+
+Google services share a single `GoogleAuth` layer for OAuth2.
+
+## Getting Started
 
 ```bash
-pnpm create next-app --example https://github.com/nivalis-studio/app-template
-```
+# Clone
+git clone https://github.com/nivalis-studio/app-template.git
+cd app-template
 
-### Development
+# Install dependencies
+pnpm install
 
-```bash
+# Configure environment
+cp .env.example .env
+# Fill in your keys (see below)
+
+# Run dev server
 pnpm dev
 ```
 
-### Create a new neon database
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start dev server (Next.js with Turbopack) |
+| `pnpm build` | Build all packages and apps |
+| `pnpm test` | Run tests (Vitest) |
+| `pnpm lint` | Lint with Biome |
+| `pnpm lint:fix` | Auto-fix lint issues |
+| `pnpm ts` | Type-check all packages |
+
+## Environment Variables
+
+Copy `.env.example` and fill in values:
 
 ```bash
-bunx neondb --yes
+# Database (required)
+DATABASE_URL=
+
+# Auth (required)
+BETTER_AUTH_SECRET=
+
+# AI Providers (optional — enable connectors as needed)
+OPENAI_API_KEY=
+MISTRAL_API_KEY=
+GOOGLE_GENERATIVE_AI_API_KEY=
+FIRECRAWL_API_KEY=
+
+# Google OAuth (optional — for Sheets, Calendar, Gmail)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REFRESH_TOKEN=
+
+# Monitoring (optional)
+SENTRY_DSN=
+SENTRY_AUTH_TOKEN=
 ```
+
+## Key Patterns
+
+**Effect services** — Each AI connector follows the same pattern:
+
+```ts
+import { FirecrawlService, FirecrawlLive } from "@nivalis/ai"
+import { Effect } from "effect"
+
+const program = Effect.gen(function* () {
+  const firecrawl = yield* FirecrawlService
+  const page = yield* firecrawl.scrape("https://example.com")
+  console.log(page.markdown)
+})
+
+Effect.provide(program, FirecrawlLive)
+```
+
+- **Tagged errors** — Every service defines its own `Data.TaggedError` for typed error channels
+- **Config from environment** — API keys are read via `Config.string()` at layer construction
+- **Layer composition** — Use individual layers or `AiToolkitLive` for all 6 services at once
+
+## License
+
+Private — Nivalis Studio
