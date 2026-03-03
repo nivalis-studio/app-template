@@ -17,14 +17,22 @@ const ChatInterface = () => {
 
   const isLoading = status === 'streaming' || status === 'submitted';
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive or content streams in
   const messageCount = messages.length;
+  const lastMessageParts = messages.at(-1)?.parts;
   useEffect(() => {
-    // Re-run when messageCount changes to scroll to new messages
-    if (messageCount > 0 && scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    // Both messageCount and lastMessageParts trigger re-scroll:
+    // messageCount for new messages, lastMessageParts for streaming updates
+    if ((messageCount > 0 || lastMessageParts) && scrollRef.current) {
+      // scrollRef targets the ScrollArea root; find the Viewport element
+      const viewport = scrollRef.current.querySelector(
+        '[data-slot="scroll-area-viewport"]',
+      );
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
     }
-  }, [messageCount]);
+  }, [messageCount, lastMessageParts]);
 
   // Focus input on mount
   useEffect(() => {

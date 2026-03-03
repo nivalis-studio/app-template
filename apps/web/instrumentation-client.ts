@@ -13,7 +13,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-    sendDefaultPii: true,
+    sendDefaultPii: false,
 
     tracesSampleRate:
       process.env.NODE_ENV === 'development'

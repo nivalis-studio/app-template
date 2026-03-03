@@ -12,7 +12,7 @@ catalog:
   '@commitlint/cli': 20.4.2
   '@commitlint/config-conventional': 20.4.2
   '@effect/language-service': 0.77.0
-  '@mendable/firecrawl-js': ^4.15.1
+  '@mendable/firecrawl-js': 4.15.1
   '@nivalis/biome-config': 2.4.4
   '@prisma/adapter-neon': 7.4.2
   '@prisma/client': 7.4.2

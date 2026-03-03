@@ -33,7 +33,7 @@ const sharedSchema = z.object({
 
 const processEnv = {
   // clientSchema keys
-  NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
+  NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL || undefined,
   NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN || undefined,
 
   // serverSchema keys
@@ -42,15 +42,16 @@ const processEnv = {
   SENTRY_DSN: process.env.SENTRY_DSN || undefined,
 
   // AI Provider Keys
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-  MISTRAL_API_KEY: process.env.MISTRAL_API_KEY,
-  GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-  FIRECRAWL_API_KEY: process.env.FIRECRAWL_API_KEY,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || undefined,
+  MISTRAL_API_KEY: process.env.MISTRAL_API_KEY || undefined,
+  GOOGLE_GENERATIVE_AI_API_KEY:
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY || undefined,
+  FIRECRAWL_API_KEY: process.env.FIRECRAWL_API_KEY || undefined,
 
   // Google OAuth
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || undefined,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || undefined,
+  GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN || undefined,
 
   // sharedSchema keys
   NODE_ENV: process.env.NODE_ENV,

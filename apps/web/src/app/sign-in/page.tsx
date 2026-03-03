@@ -85,7 +85,12 @@ const SignInPage = () => {
               <Input
                 autoComplete='email'
                 id='email'
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) {
+                    setFieldErrors(prev => ({ ...prev, email: undefined }));
+                  }
+                }}
                 placeholder='you@example.com'
                 type='email'
                 value={email}
@@ -102,7 +107,12 @@ const SignInPage = () => {
               <Input
                 autoComplete='current-password'
                 id='password'
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) {
+                    setFieldErrors(prev => ({ ...prev, password: undefined }));
+                  }
+                }}
                 placeholder='••••••••'
                 type='password'
                 value={password}

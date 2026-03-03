@@ -182,18 +182,11 @@ export const GeminiPdfLive = Layer.effect(
       extractFromPdf: (input: Buffer | URL) =>
         Effect.tryPromise({
           try: async () => {
-            const filePart =
-              input instanceof URL
-                ? {
-                    type: 'file' as const,
-                    data: input,
-                    mediaType: 'application/pdf' as const,
-                  }
-                : {
-                    type: 'file' as const,
-                    data: input,
-                    mediaType: 'application/pdf' as const,
-                  };
+            const filePart = {
+              type: 'file' as const,
+              data: input,
+              mediaType: 'application/pdf' as const,
+            };
 
             const result = await generateText({
               model: google('gemini-2.5-flash'),

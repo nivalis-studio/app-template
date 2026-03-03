@@ -34,7 +34,7 @@ catalogs:
       specifier: 0.77.0
       version: 0.77.0
     '@mendable/firecrawl-js':
-      specifier: ^4.15.1
+      specifier: 4.15.1
       version: 4.15.1
     '@nivalis/biome-config':
       specifier: 2.4.4

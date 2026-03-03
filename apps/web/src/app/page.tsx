@@ -40,13 +40,13 @@ const Page = () => {
 
         <div className='flex flex-wrap items-center justify-center gap-3'>
           <Link
-            className='inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 font-medium font-sans text-primary-foreground text-sm transition-colors hover:bg-primary/80'
+            className='inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 font-medium font-sans text-primary-foreground text-sm transition-colors hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
             href='/sign-up'
           >
             Get Started
           </Link>
           <Link
-            className='inline-flex h-9 items-center justify-center rounded-lg border border-input bg-background px-4 font-medium font-sans text-sm transition-colors hover:bg-muted hover:text-foreground'
+            className='inline-flex h-9 items-center justify-center rounded-lg border border-input bg-background px-4 font-medium font-sans text-sm transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
             href='/sign-in'
           >
             Sign In

@@ -1,7 +1,13 @@
 import { openai } from '@ai-sdk/openai';
 import { FirecrawlLive, FirecrawlService } from '@nivalis/ai';
 import { makeRuntime } from '@nivalis/utils';
-import { convertToModelMessages, streamText, tool, type UIMessage } from 'ai';
+import {
+  convertToModelMessages,
+  stepCountIs,
+  streamText,
+  tool,
+  type UIMessage,
+} from 'ai';
 import { Config, Context, Data, Effect, Layer } from 'effect';
 import { headers } from 'next/headers';
 import { z } from 'zod';
@@ -98,6 +104,7 @@ export const POST = async (req: Request) => {
   //    Effect ManagedRuntime.
   const result = streamText({
     model: openai('gpt-4o-mini'),
+    stopWhen: stepCountIs(2),
     system:
       'You are a helpful AI assistant. You can help users with general questions and also scrape web pages for information when needed. Be concise and helpful.',
     messages,

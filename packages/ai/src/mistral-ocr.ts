@@ -137,10 +137,11 @@ export const MistralOcrLive = Layer.effect(
       processDocument: (input: Buffer | URL, mediaType = 'application/pdf') =>
         Effect.tryPromise({
           try: async () => {
-            const filePart =
-              input instanceof URL
-                ? { type: 'file' as const, data: input, mediaType }
-                : { type: 'file' as const, data: input, mediaType };
+            const filePart = {
+              type: 'file' as const,
+              data: input,
+              mediaType,
+            };
 
             const result = await generateText({
               model: mistral('pixtral-large-latest'),

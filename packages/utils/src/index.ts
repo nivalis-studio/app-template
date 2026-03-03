@@ -9,6 +9,8 @@ export {
   UnauthorizedError,
   ValidationError,
 } from './errors.ts';
+// General-purpose helpers
+export { invariant, slugify } from './invariant.ts';
 // Effect layer composition
 export {
   composeLayers,
