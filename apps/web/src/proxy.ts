@@ -1,13 +1,9 @@
-import { headers } from 'next/headers';
 import { type NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 
-export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export function proxy(request: NextRequest) {
+  const sessionCookie = request.cookies.get('better-auth.session_token');
 
-  if (!session) {
+  if (!sessionCookie?.value) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
@@ -15,5 +11,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard'],
+  matcher: ['/dashboard/:path*'],
 };
