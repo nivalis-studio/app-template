@@ -1,0 +1,182 @@
+{
+	"groupId": "exports-types-config",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "n/a (read-only code inspection)",
+		"namespace": "n/a"
+	},
+	"toolsUsed": ["Read", "Grep", "Glob"],
+	"assertions": [
+		{
+			"id": "VAL-AITK-007",
+			"title": "All 6 AI services are re-exported from @nivalis/ai barrel",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/index.ts",
+					"expected": "Barrel re-exports all 6 services (Firecrawl, MistralOcr, GeminiPdf, GoogleSheets, GoogleCalendar, Gmail)",
+					"observed": "All 6 services re-exported: FirecrawlService/FirecrawlLive from './firecrawl.js', MistralOcrService/MistralOcrLive from './mistral-ocr.js', GeminiPdfService/GeminiPdfLive from './gemini-pdf.js', GoogleSheetsService/GoogleSheetsLive from './google-sheets.js', GoogleCalendarService/GoogleCalendarLive from './google-calendar.js', GmailService/GmailLive from './gmail.js'. Also exports GoogleAuth/GoogleAuthLive, AiToolkitLive, all error types, and all domain types."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": ["packages/ai/src/index.ts"],
+				"details": "Barrel exports: FirecrawlService, FirecrawlLive, FirecrawlError, ScrapedPage, CrawledPage, CrawlOptions, CrawlResult, ExtractOptions, ExtractedData (firecrawl); MistralOcrService, MistralOcrLive, MistralOcrError, OcrResult, OcrUsage (mistral-ocr); GeminiPdfService, GeminiPdfLive, GeminiPdfError, PdfExtractionResult, PdfPageInfo, PdfExtractionUsage (gemini-pdf); GoogleSheetsService, GoogleSheetsLive, GoogleSheetsError, SheetData (google-sheets); GoogleCalendarService, GoogleCalendarLive, GoogleCalendarError, CalendarEvent, EventDateTime, EventInput, TimeRange (google-calendar); GmailService, GmailLive, GmailError, EmailMessage, SentEmail, SendEmailOptions (gmail); GoogleAuth, GoogleAuthLive, GoogleAuthClient, GoogleAuthService (google-auth); GoogleAuthError (errors); AiToolkitLive (toolkit)"
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-008",
+			"title": "Each AI service has a typed error type",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read each service file for Data.TaggedError class definitions",
+					"expected": "Each service defines a tagged error class (e.g., FirecrawlError) using Data.TaggedError",
+					"observed": "All 6 services define tagged errors: FirecrawlError extends Data.TaggedError('FirecrawlError'), MistralOcrError extends Data.TaggedError('MistralOcrError'), GeminiPdfError extends Data.TaggedError('GeminiPdfError'), GoogleSheetsError extends Data.TaggedError('GoogleSheetsError'), GoogleCalendarError extends Data.TaggedError('GoogleCalendarError'), GmailError extends Data.TaggedError('GmailError'). GoogleAuthError also defined in errors.ts."
+				},
+				{
+					"action": "Verify error types appear in service method return types",
+					"expected": "Error types in the E position of Effect.Effect<A, E, R>",
+					"observed": "Confirmed: e.g., scrape returns Effect.Effect<ScrapedPage, FirecrawlError>, processDocument returns Effect.Effect<OcrResult, MistralOcrError>, extractFromPdf returns Effect.Effect<PdfExtractionResult, GeminiPdfError>, readRange returns Effect.Effect<SheetData, GoogleSheetsError>, listEvents returns Effect.Effect<ReadonlyArray<CalendarEvent>, GoogleCalendarError>, send returns Effect.Effect<SentEmail, GmailError>."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/firecrawl.ts",
+					"packages/ai/src/mistral-ocr.ts",
+					"packages/ai/src/gemini-pdf.ts",
+					"packages/ai/src/google-sheets.ts",
+					"packages/ai/src/google-calendar.ts",
+					"packages/ai/src/gmail.ts",
+					"packages/ai/src/errors.ts"
+				],
+				"details": "All 6 service errors use Data.TaggedError pattern with {message: string, cause?: unknown} shape. Error types appear in Effect error channel of all service methods."
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-009",
+			"title": "Each AI service reads its API key from Effect Config",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read each live layer implementation for Config.string usage",
+					"expected": "Each service reads API key from Effect Config, no hardcoded keys",
+					"observed": "FirecrawlLive: yield* Config.string('FIRECRAWL_API_KEY'). MistralOcrLive: yield* Config.string('MISTRAL_API_KEY'). GeminiPdfLive: yield* Config.string('GOOGLE_GENERATIVE_AI_API_KEY'). GoogleAuthLive: yield* Config.string('GOOGLE_CLIENT_ID'), yield* Config.string('GOOGLE_CLIENT_SECRET'), yield* Config.string('GOOGLE_REFRESH_TOKEN'). GoogleSheets/GoogleCalendar/Gmail depend on GoogleAuth for credentials (yield* GoogleAuth). No hardcoded API keys found in any file."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/firecrawl.ts",
+					"packages/ai/src/mistral-ocr.ts",
+					"packages/ai/src/gemini-pdf.ts",
+					"packages/ai/src/google-auth.ts",
+					"packages/ai/src/google-sheets.ts",
+					"packages/ai/src/google-calendar.ts",
+					"packages/ai/src/gmail.ts"
+				],
+				"details": "Config keys: FIRECRAWL_API_KEY (Firecrawl), MISTRAL_API_KEY (MistralOcr), GOOGLE_GENERATIVE_AI_API_KEY (GeminiPdf), GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET + GOOGLE_REFRESH_TOKEN (GoogleAuth, shared by Google services). All use Effect Config.string()."
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-010",
+			"title": "Missing API key produces a ConfigError, not a crash",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read test files for ConfigError assertions",
+					"expected": "Tests demonstrate that missing API keys produce ConfigError failures",
+					"observed": "firecrawl.test.ts: 'fails with ConfigError when FIRECRAWL_API_KEY is missing' — uses ConfigProvider.fromMap(new Map()), verifies exit._tag === 'Failure'. mistral-ocr.test.ts: 'fails with ConfigError when MISTRAL_API_KEY is missing' — same pattern. gemini-pdf.test.ts: 'fails with ConfigError when GOOGLE_GENERATIVE_AI_API_KEY is missing' — same pattern. google-auth.test.ts: 3 separate tests for missing GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN — each verifies exit._tag === 'Failure'. Google services (Sheets, Calendar, Gmail) depend on GoogleAuth, so missing Google credentials cascade as ConfigError through GoogleAuthLive."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/__tests__/firecrawl.test.ts",
+					"packages/ai/src/__tests__/mistral-ocr.test.ts",
+					"packages/ai/src/__tests__/gemini-pdf.test.ts",
+					"packages/ai/src/__tests__/google-auth.test.ts"
+				],
+				"details": "6 explicit ConfigError tests exist: 1 for Firecrawl, 1 for MistralOcr, 1 for GeminiPdf, 3 for GoogleAuth (one per config key). All use empty or partial ConfigProvider and assert exit._tag === 'Failure'. No unhandled exceptions."
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-011",
+			"title": "Google services share an auth dependency",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read google-auth.ts for GoogleAuth service tag",
+					"expected": "GoogleAuth service tag exists as a shared auth dependency",
+					"observed": "GoogleAuth = Context.GenericTag<GoogleAuthService>('GoogleAuth') defined in google-auth.ts. GoogleAuthLive layer reads GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN from Config and creates OAuth2 client."
+				},
+				{
+					"action": "Read GoogleSheets, GoogleCalendar, Gmail live layers for GoogleAuth dependency",
+					"expected": "All three Google service live layers depend on GoogleAuth",
+					"observed": "GoogleSheetsLive: import { GoogleAuth } from './google-auth.js', yield* GoogleAuth in Layer.effect. GoogleCalendarLive: import { GoogleAuth } from './google-auth.js', yield* GoogleAuth in Layer.effect. GmailLive: import { GoogleAuth } from './google-auth.js', yield* GoogleAuth in Layer.effect. All three share the same auth dependency pattern."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/google-auth.ts",
+					"packages/ai/src/google-sheets.ts",
+					"packages/ai/src/google-calendar.ts",
+					"packages/ai/src/gmail.ts"
+				],
+				"details": "GoogleAuth service tag exists at Context.GenericTag<GoogleAuthService>('GoogleAuth'). All 3 Google services (GoogleSheets, GoogleCalendar, Gmail) import GoogleAuth and yield* GoogleAuth in their live layer Effect.gen, obtaining the shared OAuth2 client. None independently manage OAuth tokens."
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-014",
+			"title": "Service interfaces use domain types, not SDK types",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read service interface type definitions for each service",
+					"expected": "Interfaces expose domain types, not raw HTTP/SDK types",
+					"observed": "Firecrawl: ScrapedPage, CrawledPage, CrawlResult, ExtractedData (all domain types defined in firecrawl.ts). MistralOcr: OcrResult, OcrUsage (domain types in mistral-ocr.ts). GeminiPdf: PdfExtractionResult, PdfPageInfo, PdfExtractionUsage (domain types in gemini-pdf.ts). GoogleSheets: SheetData (domain type in google-sheets.ts). GoogleCalendar: CalendarEvent, TimeRange, EventInput, EventDateTime (domain types in google-calendar.ts). Gmail: SentEmail, EmailMessage, SendEmailOptions (domain types in gmail.ts). GoogleAuth: GoogleAuthClient (domain wrapper for OAuth2 client)."
+				},
+				{
+					"action": "Verify no SDK types leak into service interfaces",
+					"expected": "Service interface type signatures reference only domain types",
+					"observed": "Confirmed: FirecrawlServiceShape methods return Effect.Effect<ScrapedPage, ...>, not Firecrawl SDK response types. MistralOcrServiceShape returns Effect.Effect<OcrResult, ...>, not raw AI SDK result. GeminiPdfServiceShape returns Effect.Effect<PdfExtractionResult, ...>. GoogleSheetsServiceShape returns Effect.Effect<SheetData, ...>, not googleapis response. GoogleCalendarServiceShape returns Effect.Effect<CalendarEvent[], ...>. GmailServiceShape returns Effect.Effect<SentEmail, ...> and Effect.Effect<EmailMessage[], ...>. SDK types used only internally in live layer implementations (e.g., toCalendarEvent helper maps SDK data to domain type)."
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (code inspection)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/firecrawl.ts",
+					"packages/ai/src/mistral-ocr.ts",
+					"packages/ai/src/gemini-pdf.ts",
+					"packages/ai/src/google-sheets.ts",
+					"packages/ai/src/google-calendar.ts",
+					"packages/ai/src/gmail.ts"
+				],
+				"details": "Domain types per service: Firecrawl → ScrapedPage, CrawledPage, CrawlOptions, CrawlResult, ExtractOptions, ExtractedData, ScrapedPageMetadata. MistralOcr → OcrResult, OcrUsage. GeminiPdf → PdfExtractionResult, PdfPageInfo, PdfExtractionUsage. GoogleSheets → SheetData. GoogleCalendar → CalendarEvent, TimeRange, EventDateTime, EventInput. Gmail → SentEmail, EmailMessage, SendEmailOptions. SDK types (@mendable/firecrawl-js, @ai-sdk/mistral, @ai-sdk/google, googleapis) are only used inside live layer Effect.tryPromise blocks and mapped to domain types via satisfies or helper functions."
+			},
+			"issues": null
+		}
+	],
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 6 assertions: all 6 passed. VAL-AITK-007: barrel exports all 6 services plus GoogleAuth and AiToolkitLive. VAL-AITK-008: each service has a Data.TaggedError subclass in the error channel. VAL-AITK-009: all services read API keys from Effect Config.string(). VAL-AITK-010: ConfigError tests exist for Firecrawl, MistralOcr, GeminiPdf, and GoogleAuth (3 keys). VAL-AITK-011: GoogleAuth shared dependency used by all 3 Google services. VAL-AITK-014: all interfaces use domain types with no SDK type leakage."
+}

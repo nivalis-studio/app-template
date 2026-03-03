@@ -1,0 +1,119 @@
+{
+	"groupId": "composition-tests",
+	"testedAt": "2026-03-03T00:16:00.000Z",
+	"credentials": {
+		"account": "n/a (code inspection and CLI only)",
+		"namespace": "ai-toolkit"
+	},
+	"toolsUsed": ["file-read", "shell-execute"],
+	"assertions": [
+		{
+			"id": "VAL-AITK-012",
+			"title": "All services composable into a single Layer",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/toolkit.ts",
+					"expected": "AiToolkitLive exports a merged layer of all 6 services",
+					"observed": "AiToolkitLive uses Layer.mergeAll to compose FirecrawlLive, MistralOcrLive, GeminiPdfLive, and GoogleServicesLive (which merges GoogleSheetsLive, GoogleCalendarLive, GmailLive with GoogleAuthLive)"
+				},
+				{
+					"action": "Read packages/ai/src/index.ts barrel",
+					"expected": "AiToolkitLive re-exported from barrel",
+					"observed": "AiToolkitLive exported from toolkit.js in barrel file"
+				},
+				{
+					"action": "Read packages/ai/src/__tests__/toolkit.test.ts",
+					"expected": "Test creates merged layer from all 6 services and TypeScript compiles",
+					"observed": "Test 'provides all 6 services when all config is present' yields all 6 services from AiToolkitLive and verifies each has its expected methods. Test compiles and passes."
+				},
+				{
+					"action": "Run pnpm test (turbo test)",
+					"expected": "toolkit.test.ts passes",
+					"observed": "toolkit.test.ts: 4 tests passed (composition + 3 ConfigError missing key tests)"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (CLI-only test)",
+				"network": "n/a",
+				"files": [
+					"packages/ai/src/toolkit.ts — AiToolkitLive = Layer.mergeAll(FirecrawlLive, MistralOcrLive, GeminiPdfLive, GoogleServicesLive)",
+					"packages/ai/src/__tests__/toolkit.test.ts — 4 tests: composition + 3 ConfigError tests"
+				],
+				"turboOutput": "turbo test: @nivalis/ai:test 8 files, 73 tests passed including toolkit.test.ts (4 tests)"
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-013",
+			"title": "Each AI service has at least one unit test",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "List test files in packages/ai/src/__tests__/",
+					"expected": "Test files for all 6 services",
+					"observed": "Found 8 test files: firecrawl.test.ts (9 tests), mistral-ocr.test.ts (8 tests), gemini-pdf.test.ts (8 tests), google-sheets.test.ts (11 tests), google-calendar.test.ts (13 tests), gmail.test.ts (12 tests), google-auth.test.ts (8 tests), toolkit.test.ts (4 tests)"
+				},
+				{
+					"action": "Read each test file to verify mocked API responses",
+					"expected": "Each test uses mock layers or vi.mock to avoid real API calls",
+					"observed": "firecrawl.test.ts: uses Layer.succeed mock + live config test; mistral-ocr.test.ts: uses Layer.succeed mock + live config test; gemini-pdf.test.ts: uses Layer.succeed mock + live config test; google-sheets.test.ts: uses vi.mock('googleapis') with mock functions; google-calendar.test.ts: uses vi.mock('googleapis') with mock functions; gmail.test.ts: uses vi.mock('googleapis') with mock functions"
+				},
+				{
+					"action": "Run pnpm test (turbo test)",
+					"expected": "All 6 service test files pass",
+					"observed": "All 8 test files passed: 73 total tests, 0 failures. Services covered: Firecrawl (9), MistralOcr (8), GeminiPdf (8), GoogleSheets (11), GoogleCalendar (13), Gmail (12), GoogleAuth (8), Toolkit (4)"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (CLI-only test)",
+				"network": "n/a",
+				"testOutput": "turbo test exit code 0. @nivalis/ai:test: Test Files 8 passed (8), Tests 73 passed (73). Duration 978ms.",
+				"serviceTestCoverage": {
+					"firecrawl": { "file": "firecrawl.test.ts", "tests": 9 },
+					"mistralOcr": { "file": "mistral-ocr.test.ts", "tests": 8 },
+					"geminiPdf": { "file": "gemini-pdf.test.ts", "tests": 8 },
+					"googleSheets": { "file": "google-sheets.test.ts", "tests": 11 },
+					"googleCalendar": { "file": "google-calendar.test.ts", "tests": 13 },
+					"gmail": { "file": "gmail.test.ts", "tests": 12 },
+					"googleAuth": { "file": "google-auth.test.ts", "tests": 8 },
+					"toolkit": { "file": "toolkit.test.ts", "tests": 4 }
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-CROSS-006",
+			"title": "Turbo task dependencies resolve correctly",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Run BETTER_AUTH_SECRET=dev-secret DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder pnpm build",
+					"expected": "Package builds (@nivalis/ai, @nivalis/utils) complete before apps/web build",
+					"observed": "turbo build completed: @nivalis/ai:build and @nivalis/utils:build completed first (cache hit), then @nivalis/web:build ran successfully. All 3 tasks successful, exit code 0."
+				},
+				{
+					"action": "Verify build ordering from turbo output",
+					"expected": "Packages before app",
+					"observed": "@nivalis/ai:build (cache hit) and @nivalis/utils:build (cache hit) listed before @nivalis/web:build. Web build produced Next.js 16.1.6 production build with routes: /, /_not-found, /api/auth/[...all], /icon/[__metadata_id__], /robots.txt, /sitemap.xml"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "n/a (CLI-only test)",
+				"network": "n/a",
+				"buildOutput": "turbo build: Tasks 3 successful, 3 total. @nivalis/utils:build -> @nivalis/ai:build -> @nivalis/web:build (correct ordering). FULL TURBO. Exit code 0.",
+				"buildWarnings": [
+					"Better Auth: Base URL could not be determined (expected with placeholder env)",
+					"Better Auth: BETTER_AUTH_SECRET should be at least 32 characters (expected with dev-secret)"
+				]
+			},
+			"issues": null
+		}
+	],
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 3 assertions: 3 passed, 0 failed. VAL-AITK-012: AiToolkitLive in toolkit.ts correctly merges all 6 AI service layers using Layer.mergeAll; composition test in toolkit.test.ts confirms all 6 services are accessible. VAL-AITK-013: All 6 AI services have dedicated test files with mocked API responses; 73 tests across 8 files all pass. VAL-CROSS-006: turbo build resolves dependencies correctly — packages build before apps/web; full build succeeds with exit code 0."
+}

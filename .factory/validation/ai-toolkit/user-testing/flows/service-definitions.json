@@ -1,0 +1,280 @@
+{
+	"groupId": "service-definitions",
+	"testedAt": "2026-03-03T00:00:00.000Z",
+	"credentials": {
+		"account": "N/A (read-only code inspection)",
+		"namespace": "ai-toolkit"
+	},
+	"toolsUsed": ["Read", "Grep"],
+	"assertions": [
+		{
+			"id": "VAL-AITK-001",
+			"title": "Firecrawl service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/firecrawl.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, 206 lines, complete Effect service definition"
+				},
+				{
+					"action": "Check for FirecrawlService tag export using Context.GenericTag",
+					"expected": "export const FirecrawlService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const FirecrawlService = Context.GenericTag<FirecrawlServiceShape>('FirecrawlService')"
+				},
+				{
+					"action": "Check for FirecrawlLive layer export",
+					"expected": "export const FirecrawlLive = Layer.effect(...)",
+					"observed": "Found: export const FirecrawlLive = Layer.effect(FirecrawlService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for scrape method in service interface",
+					"expected": "scrape method defined in FirecrawlServiceShape",
+					"observed": "Found: readonly scrape: (url: string) => Effect.Effect<ScrapedPage, FirecrawlError>"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<FirecrawlServiceShape>('FirecrawlService')",
+					"liveLayer": "Layer.effect(FirecrawlService, Effect.gen(...))",
+					"methods": ["scrape", "crawl", "extract"],
+					"errorType": "FirecrawlError extends Data.TaggedError('FirecrawlError')",
+					"domainTypes": ["ScrapedPage", "CrawlResult", "ExtractedData"]
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-002",
+			"title": "Mistral OCR service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/mistral-ocr.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, complete Effect service definition"
+				},
+				{
+					"action": "Check for MistralOcrService tag export using Context.GenericTag",
+					"expected": "export const MistralOcrService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const MistralOcrService = Context.GenericTag<MistralOcrServiceShape>('MistralOcrService')"
+				},
+				{
+					"action": "Check for MistralOcrLive layer export",
+					"expected": "export const MistralOcrLive = Layer.effect(...)",
+					"observed": "Found: export const MistralOcrLive = Layer.effect(MistralOcrService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for ocr or processDocument method in service interface",
+					"expected": "ocr or processDocument method defined in MistralOcrServiceShape",
+					"observed": "Found: readonly processDocument: (input: Buffer | URL, mediaType?: string) => Effect.Effect<OcrResult, MistralOcrError>"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<MistralOcrServiceShape>('MistralOcrService')",
+					"liveLayer": "Layer.effect(MistralOcrService, Effect.gen(...))",
+					"methods": ["processDocument"],
+					"errorType": "MistralOcrError extends Data.TaggedError('MistralOcrError')",
+					"domainTypes": ["OcrResult", "OcrUsage"]
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-003",
+			"title": "Gemini PDF service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/gemini-pdf.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, complete Effect service definition"
+				},
+				{
+					"action": "Check for GeminiPdfService tag export using Context.GenericTag",
+					"expected": "export const GeminiPdfService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const GeminiPdfService = Context.GenericTag<GeminiPdfServiceShape>('GeminiPdfService')"
+				},
+				{
+					"action": "Check for GeminiPdfLive layer export",
+					"expected": "export const GeminiPdfLive = Layer.effect(...)",
+					"observed": "Found: export const GeminiPdfLive = Layer.effect(GeminiPdfService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for extract or analyze method in service interface",
+					"expected": "extract or analyze method defined in GeminiPdfServiceShape",
+					"observed": "Found: readonly extractFromPdf: (input: Buffer | URL) => Effect.Effect<PdfExtractionResult, GeminiPdfError> — extraction method present (named extractFromPdf)"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<GeminiPdfServiceShape>('GeminiPdfService')",
+					"liveLayer": "Layer.effect(GeminiPdfService, Effect.gen(...))",
+					"methods": ["extractFromPdf"],
+					"errorType": "GeminiPdfError extends Data.TaggedError('GeminiPdfError')",
+					"domainTypes": [
+						"PdfExtractionResult",
+						"PdfPageInfo",
+						"PdfExtractionUsage"
+					],
+					"note": "Method is named 'extractFromPdf' rather than just 'extract', but fulfills the extraction requirement"
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-004",
+			"title": "Google Sheets service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/google-sheets.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, complete Effect service definition"
+				},
+				{
+					"action": "Check for GoogleSheetsService tag export using Context.GenericTag",
+					"expected": "export const GoogleSheetsService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const GoogleSheetsService = Context.GenericTag<GoogleSheetsServiceShape>('GoogleSheetsService')"
+				},
+				{
+					"action": "Check for GoogleSheetsLive layer export",
+					"expected": "export const GoogleSheetsLive = Layer.effect(...)",
+					"observed": "Found: export const GoogleSheetsLive = Layer.effect(GoogleSheetsService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for read and write methods in service interface",
+					"expected": "read and write methods defined in GoogleSheetsServiceShape",
+					"observed": "Found: readonly readRange (read method), readonly writeRange (write method), readonly appendRows (bonus write method)"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<GoogleSheetsServiceShape>('GoogleSheetsService')",
+					"liveLayer": "Layer.effect(GoogleSheetsService, Effect.gen(...))",
+					"methods": ["readRange", "writeRange", "appendRows"],
+					"errorType": "GoogleSheetsError extends Data.TaggedError('GoogleSheetsError')",
+					"domainTypes": ["SheetData"],
+					"note": "Methods named readRange/writeRange rather than read/write, but fulfill the read and write requirements"
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-005",
+			"title": "Google Calendar service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/google-calendar.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, complete Effect service definition"
+				},
+				{
+					"action": "Check for GoogleCalendarService tag export using Context.GenericTag",
+					"expected": "export const GoogleCalendarService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const GoogleCalendarService = Context.GenericTag<GoogleCalendarServiceShape>('GoogleCalendarService')"
+				},
+				{
+					"action": "Check for GoogleCalendarLive layer export",
+					"expected": "export const GoogleCalendarLive = Layer.effect(...)",
+					"observed": "Found: export const GoogleCalendarLive = Layer.effect(GoogleCalendarService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for listEvents method",
+					"expected": "listEvents method defined in GoogleCalendarServiceShape",
+					"observed": "Found: readonly listEvents: (calendarId: string, timeRange: TimeRange) => Effect.Effect<ReadonlyArray<CalendarEvent>, GoogleCalendarError>"
+				},
+				{
+					"action": "Check for createEvent method",
+					"expected": "createEvent method defined in GoogleCalendarServiceShape",
+					"observed": "Found: readonly createEvent: (calendarId: string, event: EventInput) => Effect.Effect<CalendarEvent, GoogleCalendarError>"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<GoogleCalendarServiceShape>('GoogleCalendarService')",
+					"liveLayer": "Layer.effect(GoogleCalendarService, Effect.gen(...))",
+					"methods": [
+						"listEvents",
+						"createEvent",
+						"updateEvent",
+						"deleteEvent"
+					],
+					"errorType": "GoogleCalendarError extends Data.TaggedError('GoogleCalendarError')",
+					"domainTypes": [
+						"CalendarEvent",
+						"EventInput",
+						"EventDateTime",
+						"TimeRange"
+					]
+				}
+			},
+			"issues": null
+		},
+		{
+			"id": "VAL-AITK-006",
+			"title": "Gmail service is defined as an Effect service",
+			"status": "pass",
+			"steps": [
+				{
+					"action": "Read packages/ai/src/gmail.ts",
+					"expected": "File exists and contains Effect service definition",
+					"observed": "File exists, complete Effect service definition"
+				},
+				{
+					"action": "Check for GmailService tag export using Context.GenericTag",
+					"expected": "export const GmailService = Context.GenericTag<...>(...)",
+					"observed": "Found: export const GmailService = Context.GenericTag<GmailServiceShape>('GmailService')"
+				},
+				{
+					"action": "Check for GmailLive layer export",
+					"expected": "export const GmailLive = Layer.effect(...)",
+					"observed": "Found: export const GmailLive = Layer.effect(GmailService, Effect.gen(function* () { ... }))"
+				},
+				{
+					"action": "Check for send method",
+					"expected": "send method defined in GmailServiceShape",
+					"observed": "Found: readonly send: (to: string, subject: string, body: string, options?: SendEmailOptions) => Effect.Effect<SentEmail, GmailError>"
+				},
+				{
+					"action": "Check for list method",
+					"expected": "list method defined in GmailServiceShape",
+					"observed": "Found: readonly list: (query?: string, maxResults?: number) => Effect.Effect<ReadonlyArray<EmailMessage>, GmailError>"
+				}
+			],
+			"evidence": {
+				"screenshots": [],
+				"consoleErrors": "N/A (code inspection)",
+				"network": "N/A (code inspection)",
+				"codeEvidence": {
+					"serviceTag": "Context.GenericTag<GmailServiceShape>('GmailService')",
+					"liveLayer": "Layer.effect(GmailService, Effect.gen(...))",
+					"methods": ["send", "list", "get"],
+					"errorType": "GmailError extends Data.TaggedError('GmailError')",
+					"domainTypes": ["SentEmail", "EmailMessage", "SendEmailOptions"]
+				}
+			},
+			"issues": null
+		}
+	],
+	"frictions": [],
+	"blockers": [],
+	"summary": "Tested 6 assertions: all 6 passed. All services (Firecrawl, MistralOcr, GeminiPdf, GoogleSheets, GoogleCalendar, Gmail) are properly defined as Effect services with Context.GenericTag service tags, Layer.effect live layers, Data.TaggedError typed errors, and all required methods present in their service interfaces."
+}

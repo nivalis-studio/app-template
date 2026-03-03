@@ -60,3 +60,42 @@ Foundation milestone assertions are all code/infrastructure checks — no browse
 - BETTER_AUTH_SECRET=dev-secret must be set for any build/dev commands
 - DATABASE_URL needs placeholder for build: postgresql://placeholder:placeholder@localhost/placeholder
 - Run turbo commands from repo root: /Users/pnodet/git/nivalis/app-template
+
+## Flow Validator Guidance: AI Toolkit
+
+AI Toolkit milestone assertions are all code/infrastructure checks — no browser testing needed.
+
+### Isolation Rules
+- Subagents are read-only: they inspect files, run builds/tests, and check configurations
+- No shared mutable state — each subagent checks different aspects of the codebase
+- Do NOT restart the dev server or modify any source files during validation
+- Each subagent may run `turbo test --filter=@nivalis/ai` independently (reads only)
+
+### Testing Approach
+- Use file reads (Read, Grep tools) to verify service definitions, exports, types, error channels
+- Use shell commands (turbo build, turbo test, turbo ts) for build/test verification
+- Check barrel exports at `packages/ai/src/index.ts`
+- Check individual service files at `packages/ai/src/<service-name>.ts`
+- Check test files at `packages/ai/src/__tests__/<service-name>.test.ts`
+- Check composed layer at `packages/ai/src/toolkit.ts`
+
+### Package Structure
+```
+packages/ai/src/
+├── index.ts           # Barrel exports all services
+├── toolkit.ts         # AiToolkitLive composed layer
+├── errors.ts          # Shared error types
+├── google-auth.ts     # GoogleAuth shared dependency
+├── firecrawl.ts       # Firecrawl service
+├── mistral-ocr.ts     # Mistral OCR service
+├── gemini-pdf.ts      # Gemini PDF service
+├── google-sheets.ts   # Google Sheets service
+├── google-calendar.ts # Google Calendar service
+├── gmail.ts           # Gmail service
+└── __tests__/         # Test files for each service
+```
+
+### Build Environment
+- Run turbo commands from: /Users/pnodet/git/nivalis/app-template
+- `BETTER_AUTH_SECRET=dev-secret` needed for build commands involving apps/web
+- `DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder` for build placeholders
