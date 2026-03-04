@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { BotIcon, SendIcon, UserIcon } from 'lucide-react';
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type SubmitEvent, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -39,7 +39,7 @@ const ChatInterface = () => {
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isLoading) {

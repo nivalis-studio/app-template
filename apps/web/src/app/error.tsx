@@ -1,17 +1,17 @@
 'use client';
 
+import { captureException } from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 const Page = ({
   error,
   reset,
 }: {
-  readonly error: Error;
+  readonly error: Error & { digest?: string };
   readonly reset: () => void;
 }) => {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error(error);
+    captureException(error);
   }, [error]);
 
   return (

@@ -19,14 +19,16 @@ const GlobalError = ({
       <body>
         <div className='flex h-full min-h-screen items-center justify-center'>
           <div className='flex flex-col items-center gap-4 px-4 text-center'>
-            <h1 className='font-extrabold text-2xl tracking-tight sm:text-3xl'>
-              Something went wrong
-            </h1>
-            <p className='text-gray-500'>
-              An unexpected error occurred. Please try again.
-            </p>
+            <div className='flex flex-auto flex-col items-center justify-center sm:flex-row'>
+              <h1 className='font-extrabold text-2xl tracking-tight sm:mr-6 sm:border-r sm:pr-6 sm:text-3xl'>
+                500
+              </h1>
+              <h2 className='mt-2 text-muted-foreground sm:mt-0'>
+                An unexpected error occurred.
+              </h2>
+            </div>
             <button
-              className='inline-flex h-9 items-center justify-center rounded-lg bg-neutral-800 px-4 font-medium text-neutral-50 text-sm transition-colors hover:bg-neutral-800/80 dark:bg-neutral-100 dark:text-neutral-800 dark:hover:bg-neutral-100/80'
+              className='inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/80'
               onClick={reset}
               type='button'
             >
