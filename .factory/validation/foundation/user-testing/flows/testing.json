@@ -1,0 +1,61 @@
+{
+  "group": "testing",
+  "testedAt": "2026-03-05T09:30:00Z",
+  "assertions": {
+    "VAL-TEST-001": {
+      "status": "pass",
+      "title": "Vitest coverage thresholds configured",
+      "steps": [
+        {
+          "action": "Read vitest.config.ts for coverage configuration",
+          "expected": "Coverage provider and minimum thresholds defined",
+          "observed": "coverage.provider set to 'v8', thresholds set to 80% for lines, functions, branches, and statements; reporters set to ['text', 'lcov']"
+        },
+        {
+          "action": "Run pnpm test -- --coverage",
+          "expected": "Coverage report shows threshold status",
+          "observed": "Coverage report generated with v8 provider. Thresholds enforced: ERROR messages shown for lines (70% < 80%), functions (69.69% < 80%), statements (69.56% < 80%), branches (43.79% < 80%). Test run correctly fails when thresholds are not met."
+        }
+      ],
+      "evidence": "vitest.config.ts contains: coverage: { provider: 'v8', thresholds: { lines: 80, functions: 80, branches: 80, statements: 80 }, reporter: ['text', 'lcov'] }. Running `pnpm test -- --coverage` produces a v8 coverage report and enforces thresholds (exits with error when below 80%)."
+    },
+    "VAL-TEST-002": {
+      "status": "pass",
+      "title": "Vitest test isolation configured",
+      "steps": [
+        {
+          "action": "Read vitest.config.ts for pool/threads/forks/isolate settings",
+          "expected": "Parallel or isolated execution configured via pool threads or forks",
+          "observed": "pool set to 'threads' with maxWorkers: 4"
+        },
+        {
+          "action": "Run pnpm test to verify parallel execution",
+          "expected": "Tests run in threaded pool",
+          "observed": "Tests executed successfully across 3 workspace packages (@nivalis/utils, @nivalis/ai, @nivalis/web) using Vitest v4.0.18 with threaded pool"
+        }
+      ],
+      "evidence": "vitest.config.ts contains: pool: 'threads', maxWorkers: 4. Test output confirms Vitest v4.0.18 runs tests across workspace packages with thread-based isolation."
+    },
+    "VAL-TEST-003": {
+      "status": "pass",
+      "title": "Test performance tracking configured",
+      "steps": [
+        {
+          "action": "Read vitest.config.ts for reporter settings",
+          "expected": "Verbose reporter or timing-capable reporter configured",
+          "observed": "reporter set to ['verbose']"
+        },
+        {
+          "action": "Run pnpm test and check output for per-file timing",
+          "expected": "Duration shown per test file/suite",
+          "observed": "Each test shows individual timing (e.g., '1ms', '0ms', '5ms'). Summary shows total duration breakdown: '@nivalis/utils Duration 325ms (transform 73ms, setup 0ms, import 777ms, tests 18ms, environment 0ms)' and '@nivalis/ai Duration 1.28s (transform 193ms, setup 0ms, import 2.80s, tests 116ms, environment 0ms)'"
+        }
+      ],
+      "evidence": "vitest.config.ts sets reporter: ['verbose']. Test output shows per-test timing in milliseconds and per-suite duration breakdown (transform, setup, import, tests, environment durations)."
+    }
+  },
+  "frictions": [],
+  "blockers": [],
+  "toolsUsed": ["Read tool", "shell commands (pnpm test, pnpm test -- --coverage)"],
+  "summary": "Tested 3 assertions: all 3 passed. VAL-TEST-001: v8 coverage provider with 80% thresholds enforced. VAL-TEST-002: thread pool with 4 max workers for test isolation. VAL-TEST-003: verbose reporter shows per-test and per-suite timing."
+}

@@ -1,0 +1,28 @@
+{
+  "group": "github-config",
+  "assertions": {
+    "VAL-GH-001": {
+      "status": "pass",
+      "evidence": "Found 2 .yml files in .github/ISSUE_TEMPLATE/: bug_report.yml (structured fields: description, steps-to-reproduce, expected-behavior, actual-behavior, os, node-version, browser, additional-context) and feature_request.yml (structured fields: problem-description, proposed-solution, alternatives-considered, additional-context). Both use GitHub issue form schema with type: textarea/input fields and validation rules."
+    },
+    "VAL-GH-002": {
+      "status": "pass",
+      "evidence": "File .github/pull_request_template.md exists with 19 lines. Contains 4 sections: Description, Type of Change (with checkbox options for bug fix, new feature, breaking change, docs update), Testing Done, and Checklist (6 items covering tests, lint, typecheck, conventional commits, self-review, and test coverage)."
+    },
+    "VAL-GH-003": {
+      "status": "pass",
+      "evidence": "File .github/CODEOWNERS exists with path assignments: '* @nivalis-studio/core' (default), 'apps/web/ @nivalis-studio/frontend', 'packages/ai/ @nivalis-studio/backend', 'packages/utils/ @nivalis-studio/core'. Covers both apps/ and packages/ directories."
+    },
+    "VAL-GH-004": {
+      "status": "pass",
+      "evidence": "File .github/dependabot.yml exists (version 2) with package-ecosystem: npm, directory: /, schedule interval: weekly, open-pull-requests-limit: 10, and dependency groups for production-deps and dev-deps."
+    },
+    "VAL-GH-005": {
+      "status": "pass",
+      "evidence": "gh api repos/nivalis-studio/app-template/rulesets returned a non-empty JSON array containing 1 ruleset: 'main-branch-protection' (id: 13532079, enforcement: active, source: nivalis-studio/app-template, target: branch)."
+    }
+  },
+  "frictions": [],
+  "blockers": [],
+  "toolsUsed": ["Read tool", "gh cli"]
+}

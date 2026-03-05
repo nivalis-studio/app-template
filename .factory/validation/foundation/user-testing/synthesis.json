@@ -1,21 +1,39 @@
 {
-	"milestone": "foundation",
-	"round": 2,
-	"status": "fail",
-	"assertionsSummary": {
-		"total": 1,
-		"passed": 0,
-		"failed": 1,
-		"blocked": 0
-	},
-	"passedAssertions": [],
-	"failedAssertions": [
-		{
-			"id": "VAL-FOUND-019",
-			"reason": "@nivalis/utils still exports only Effect-related utilities (errors.ts, layers.ts, runtime.ts). The assertion requires at least one general-purpose helper function (e.g., cn(), debounce, formatDate, slugify) but none exists. The 'misc-foundation-polish' feature that was planned to fix this is still pending/not implemented."
-		}
-	],
-	"blockedAssertions": [],
-	"appliedUpdates": [],
-	"previousRound": ".factory/validation/foundation/user-testing/synthesis-round1.json"
+  "milestone": "foundation",
+  "round": 3,
+  "status": "pass",
+  "assertionsSummary": {
+    "total": 22,
+    "passed": 22,
+    "failed": 0,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-DOC-001",
+    "VAL-DOC-002",
+    "VAL-DOC-003",
+    "VAL-DOC-004",
+    "VAL-DOC-005",
+    "VAL-DOC-006",
+    "VAL-DOC-007",
+    "VAL-GH-001",
+    "VAL-GH-002",
+    "VAL-GH-003",
+    "VAL-GH-004",
+    "VAL-GH-005",
+    "VAL-DEV-001",
+    "VAL-QUAL-001",
+    "VAL-QUAL-002",
+    "VAL-QUAL-003",
+    "VAL-QUAL-004",
+    "VAL-QUAL-005",
+    "VAL-QUAL-006",
+    "VAL-TEST-001",
+    "VAL-TEST-002",
+    "VAL-TEST-003"
+  ],
+  "failedAssertions": [],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": ".factory/validation/foundation/user-testing/synthesis-round2.json"
 }

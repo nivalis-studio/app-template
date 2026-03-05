@@ -1,0 +1,38 @@
+{
+  "group": "dev-env-quality",
+  "testedAt": "2026-03-05T00:00:00.000Z",
+  "assertions": {
+    "VAL-DEV-001": {
+      "status": "pass",
+      "evidence": "File .devcontainer/devcontainer.json exists with image 'mcr.microsoft.com/devcontainers/javascript-node:24' (Node.js 24), pnpm setup via postCreateCommand 'pnpm install', and Biome VS Code extension 'biomejs.biome' in customizations.vscode.extensions. Also includes tailwindcss and prisma extensions."
+    },
+    "VAL-QUAL-001": {
+      "status": "pass",
+      "evidence": "knip.config.ts exists at repo root with workspace configuration for root, apps/web, packages/ai, and packages/utils. Running 'npx knip' exited with code 0, producing output listing unused files (4), unused dependencies (4), unused devDependencies (4), unlisted dependencies (1), unused exports (30), and unused exported types (1). Tool runs without crashing."
+    },
+    "VAL-QUAL-002": {
+      "status": "pass",
+      "evidence": "Running 'npx syncpack list-mismatches' exited with code 0. Output shows: 68 cataloged dependencies valid, 2 workspace protocol dependencies valid, 4 default version group dependencies valid. No mismatches found."
+    },
+    "VAL-QUAL-003": {
+      "status": "pass",
+      "evidence": "Config file .jscpd.json exists with threshold:5, reporters:['console'], ignore patterns for node_modules/.next/pnpm-lock, and format:['typescript','tsx']. Running 'npx jscpd' exited with code 0, producing duplicate detection report finding multiple clones in generated Prisma client files."
+    },
+    "VAL-QUAL-004": {
+      "status": "pass",
+      "evidence": "Root biome.jsonc contains explicit complexity rules: linter.rules.complexity.noExcessiveCognitiveComplexity with level 'warn' and maxAllowedComplexity of 15."
+    },
+    "VAL-QUAL-005": {
+      "status": "pass",
+      "evidence": "lefthook.yml contains a pre-commit job named 'large-file-check' with glob patterns ['*.ts', '*.tsx'] that runs: wc -l {staged_files} | awk '$1 > 500 { print \"File too large:\", $2; exit 1 }'. This checks staged files for exceeding 500 lines."
+    },
+    "VAL-QUAL-006": {
+      "status": "pass",
+      "evidence": "lefthook.yml contains a pre-commit job named 'todo-fixme-check' with glob patterns ['*.ts', '*.tsx'] that runs: grep -n 'TODO\\|FIXME\\|HACK\\|XXX' {staged_files} && echo 'WARNING: New TODO/FIXME/HACK/XXX markers found in staged files' || true. This scans staged files for tech debt markers."
+    }
+  },
+  "frictions": [],
+  "blockers": [],
+  "toolsUsed": ["Read tool", "shell commands (npx knip, npx syncpack list-mismatches, npx jscpd)"],
+  "summary": "Tested 7 assertions: all 7 passed. Devcontainer is properly configured with Node.js 24, pnpm, and Biome. All quality tools (knip, syncpack, jscpd) are configured and run without crashing. Biome has explicit complexity rules. Lefthook has both large file detection and TODO/FIXME scanning in pre-commit hooks."
+}
