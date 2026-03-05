@@ -1,6 +1,11 @@
 {
 	"threshold": 5,
 	"reporters": ["console"],
-	"ignore": ["**/node_modules/**", "**/.next/**", "**/pnpm-lock.yaml"],
+	"ignore": [
+		"**/node_modules/**",
+		"**/.next/**",
+		"**/pnpm-lock.yaml",
+		"**/src/prisma/client/**"
+	],
 	"format": ["typescript", "tsx"]
 }
