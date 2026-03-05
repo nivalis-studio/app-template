@@ -1,0 +1,11 @@
+# Default owners for everything in the repo
+* @nivalis-studio/core
+
+# Frontend application
+apps/web/ @nivalis-studio/frontend
+
+# AI connectors package
+packages/ai/ @nivalis-studio/backend
+
+# Shared utilities
+packages/utils/ @nivalis-studio/core
