@@ -221,7 +221,8 @@ sketch
 .vercel
 
 ### factory ###
-.factory
+.factory/missions
+.factory/validation
 
 ### Miscellaneous ###
 *.pem
