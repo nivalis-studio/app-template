@@ -1,0 +1,38 @@
+{
+  "group": "documentation",
+  "testedAt": "2026-03-05T00:00:00Z",
+  "toolsUsed": ["shell commands", "Read tool", "Grep tool", "Glob tool"],
+  "assertions": {
+    "VAL-DOC-001": {
+      "status": "pass",
+      "evidence": "AGENTS.md exists at repo root with 14245 characters (>100 required). grep -c 'build|test|dev|lint' returned 22 matches (>=4 required). File contains project overview, build/test/dev commands, development workflow, and project conventions."
+    },
+    "VAL-DOC-002": {
+      "status": "pass",
+      "evidence": "AGENTS.md Section 4 'Naming Conventions' documents: camelCase for variables/functions (e.g. getUserData), PascalCase for React components/types/interfaces (e.g. ChatMessage), kebab-case for file/directory names (e.g. instrumentation-client.ts), @scope/kebab-case for package names. grep matched 10 lines covering naming, convention, camelCase, PascalCase, and kebab."
+    },
+    "VAL-DOC-003": {
+      "status": "pass",
+      "evidence": "AGENTS.md Section 5 'PII Handling' documents: Data Classification with PII definition, Sentry sendDefaultPii:false config, maskAllText:true, maskAllInputs:true, blockAllMedia:true, Developer Guidelines for PII, and GDPR Compliance Approach. grep matched 12 lines covering PII, personal data, privacy, GDPR, and data classification."
+    },
+    "VAL-DOC-004": {
+      "status": "pass",
+      "evidence": "AGENTS.md Section 6 'Alerting & Incident Response' documents: Sentry Alerting as primary platform, Configuring Alert Rules (error rate spikes, performance degradation, new issue notifications), and Alert→Triage→Fix Workflow. grep matched 11 lines covering alert, sentry rules, and incident references."
+    },
+    "VAL-DOC-005": {
+      "status": "pass",
+      "evidence": "AGENTS.md Section 7 'Deployment Observability' documents: Monitoring Surfaces table with Vercel Analytics, Sentry Performance, and Sentry Errors dashboards with URLs and what to check. Post-Deploy Checklist covers error rate, performance metrics, user analytics, Web Vitals, and session replays. Ad-Blocker Bypass via tunnelRoute. grep matched 18 lines covering dashboard, monitor, vercel analytics, sentry performance, and observability."
+    },
+    "VAL-DOC-006": {
+      "status": "pass",
+      "evidence": "docs/architecture.md exists and contains Mermaid diagrams. grep found '```mermaid', 'flowchart TD', and 'subgraph' keywords. The file includes at least 3 Mermaid diagram blocks showing monorepo structure, service relationships, and tooling."
+    },
+    "VAL-DOC-007": {
+      "status": "pass",
+      "evidence": "typedoc 0.28.17 is installed (catalog: protocol in package.json). Root package.json has 'docs:generate': 'typedoc' script. typedoc.json config exists with entryPoints for packages/ai and packages/utils. Running 'pnpm docs:generate' completed successfully (exit code 0) and generated HTML output at docs/api/."
+    }
+  },
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 7 documentation assertions: all 7 passed. AGENTS.md is comprehensive (14245 chars) with thorough coverage of naming conventions, PII handling, alerting, deployment observability. Architecture diagram exists in docs/ with Mermaid. typedoc is configured and generates docs successfully."
+}

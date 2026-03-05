@@ -20,3 +20,13 @@ pre-commit:
         - "*.css"
       stage_fixed: true
     - run: pnpm run ts
+    - name: large-file-check
+      glob:
+        - "*.ts"
+        - "*.tsx"
+      run: "wc -l {staged_files} | grep -v ' total$' | awk '$1 > 500 { print \"File too large:\", $2; exit 1 }'"
+    - name: todo-fixme-check
+      glob:
+        - "*.ts"
+        - "*.tsx"
+      run: "grep -n 'TODO\\|FIXME\\|HACK\\|XXX' {staged_files} && echo 'WARNING: New TODO/FIXME/HACK/XXX markers found in staged files' || true"

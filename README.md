@@ -68,6 +68,14 @@ pnpm dev
 | `pnpm lint` | Lint with Biome |
 | `pnpm lint:fix` | Auto-fix lint issues |
 | `pnpm ts` | Type-check all packages |
+| `pnpm knip` | Dead code detection |
+| `pnpm jscpd` | Duplicate code detection |
+| `pnpm syncpack:check` | Dependency version drift check |
+| `pnpm test:e2e` | Playwright E2E tests |
+| `pnpm test:coverage` | Vitest coverage report |
+| `pnpm docs:generate` | Generate API docs (TypeDoc) |
+| `pnpm todo:scan` | Scan for TODO/FIXME/HACK tech debt |
+| `pnpm changeset` | Create a changeset for versioning |
 
 ## Environment Variables
 
@@ -95,6 +103,34 @@ GOOGLE_REFRESH_TOKEN=
 SENTRY_DSN=
 SENTRY_AUTH_TOKEN=
 ```
+
+## Development Tools
+
+- **[Knip](https://knip.dev)** — Dead code and unused dependency detection
+- **[Syncpack](https://github.com/JamieMason/syncpack)** — Enforces consistent dependency versions across the monorepo
+- **[jscpd](https://github.com/kucherenko/jscpd)** — Copy-paste / duplicate code detection
+- **[Playwright](https://playwright.dev)** — End-to-end browser testing (Chromium, Firefox, WebKit)
+- **[TypeDoc](https://typedoc.org)** — API documentation generation from TypeScript sources
+- **[Changesets](https://github.com/changesets/changesets)** — Versioning, changelogs, and publish automation
+- **[Vitest](https://vitest.dev) + `@vitest/coverage-v8`** — Unit/integration tests with V8 coverage reporting
+
+## CI/CD
+
+GitHub Actions workflows automate quality checks and releases:
+
+- **CI** (`.github/workflows/ci.yml`) — Runs lint, typecheck, tests, and build on every pull request
+- **Release** (`.github/workflows/release.yml`) — Automates versioning and publishing via Changesets when changes land on `main`
+
+## Observability
+
+- **[Pino](https://getpino.io)** — Structured JSON logging for server-side code
+- **[OpenTelemetry](https://opentelemetry.io)** — Metrics and tracing instrumentation (`@opentelemetry/api`)
+- **[Sentry](https://sentry.io)** — Error tracking, performance monitoring, and session replay (with PII masking)
+- **[Vercel Analytics](https://vercel.com/analytics)** — Web Vitals and page-view analytics
+
+## Feature Flags
+
+Feature flags are powered by the [Vercel Flags SDK](https://vercel.com/docs/workflow-collaboration/feature-flags) (`flags` package). Flags are defined in `apps/web/src/flags.ts` and work standalone — no external service required.
 
 ## Key Patterns
 

@@ -152,3 +152,28 @@ App Shell milestone assertions require browser-based testing via `agent-browser`
 ### Build Verification
 - For VAL-CROSS-002 (production build): run `BETTER_AUTH_SECRET=dev-secret DATABASE_URL=postgresql://placeholder:placeholder@localhost/placeholder pnpm build` from repo root
 - Build command should exit 0
+
+## Flow Validator Guidance: Integration Infrastructure
+
+Integration milestone assertions are all code/infrastructure checks — no browser testing needed (except Playwright which runs its own browser).
+
+### Isolation Rules
+- Subagents are read-only: they inspect files, run commands, and check configurations
+- No shared mutable state — each subagent checks different aspects of the codebase
+- Do NOT modify any source files during validation
+- For Playwright (VAL-TEST-004): may start dev server on port 3000 — only one subagent should do this
+
+### Testing Approach
+- Use file reads (Read, Grep tools) to verify file existence and content
+- Use shell commands for running tools and checking exit codes
+- All assertions are verifiable through deterministic commands
+
+### Build Environment
+- BETTER_AUTH_SECRET=dev-secret must be set for dev/build commands
+- DATABASE_URL placeholder for build: postgresql://placeholder:placeholder@localhost/placeholder
+- Run commands from repo root: /Users/pnodet/git/nivalis/app-template
+
+### Assertion Groups
+- **Group 1 (Observability + Flags)**: VAL-OBS-001, VAL-OBS-002, VAL-OBS-003, VAL-FLAG-001 — check pino, request-id, metrics, flags files
+- **Group 2 (Release Pipeline)**: VAL-REL-001, VAL-REL-002, VAL-REL-003 — check changesets config, CI/release workflows
+- **Group 3 (Cross-Area + Playwright)**: VAL-CROSS-001, VAL-CROSS-002, VAL-CROSS-003, VAL-TEST-004 — run lint/ts/test, lefthook, check catalog, run Playwright

@@ -1,0 +1,9 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"entryPoints": ["packages/ai/src/index.ts", "packages/utils/src/index.ts"],
+	"out": "docs/api",
+	"name": "Nivalis App Template",
+	"entryPointStrategy": "expand",
+	"exclude": ["**/__tests__/**", "**/*.test.ts"],
+	"skipErrorChecking": true
+}

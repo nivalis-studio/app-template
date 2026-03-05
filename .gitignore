@@ -221,10 +221,18 @@ sketch
 .vercel
 
 ### factory ###
-.factory
+.factory/missions
+.factory/validation
 
 ### Miscellaneous ###
 *.pem
 
 ### Prisma ###
 /apps/web/src/prisma/client/
+
+### TypeDoc ###
+/docs/api/
+
+### Playwright ###
+test-results/
+playwright-report/

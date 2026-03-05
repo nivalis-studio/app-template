@@ -53,6 +53,20 @@ Architectural decisions, patterns, and conventions for the Nivalis app template.
 - **shadcn data-slot targeting**: shadcn/ui components expose internal sub-elements via `data-slot` attributes (e.g., `[data-slot="scroll-area-viewport"]` for ScrollArea's viewport). Use `querySelector('[data-slot="..."]')` when you need to programmatically access component internals.
 - **Streaming response**: Use `result.toUIMessageStreamResponse()` to return streaming responses from API routes.
 
+## Observability Infrastructure
+
+- **Structured logging**: `apps/web/src/lib/logger.ts` — pino logger with configurable `LOG_LEVEL` env var (defaults to `'info'`). Use `logger.child({requestId})` for request-correlated logs.
+- **Request tracing**: `apps/web/src/lib/request-id.ts` — `getRequestId(headers)` extracts `X-Request-ID` header or generates one via `crypto.randomUUID()`. Creates child pino loggers with request context.
+- **Metrics**: `apps/web/src/lib/metrics.ts` — OpenTelemetry-based metrics using `@opentelemetry/api`. Provides counters (`incrementCounter`), histograms (`recordDuration`), and a `measureAsync` helper. **Note:** `@vercel/otel` is installed but `registerOTel()` is NOT called in `instrumentation.ts` — the meter currently operates as a no-op. To activate real metric emission, add `import { registerOTel } from '@vercel/otel'` and call `registerOTel({serviceName: 'nivalis-web'})` in `apps/web/src/instrumentation.ts`.
+- **Feature flags**: `apps/web/src/flags.ts` — Vercel Flags SDK (`flags/next`). Standalone flags with inline `decide()` functions. Current flags: `showNewDashboard` (env-based) and `enableAiChat` (default true).
+
+## E2E Testing
+
+- **Playwright** is configured at root (`playwright.config.ts`) with a `webServer` directive that starts `pnpm dev` on port 3000.
+- Smoke tests live in `e2e/` directory (e.g., `e2e/smoke.test.ts`).
+- Run with `pnpm test:e2e` (not part of `pnpm test` which runs Vitest only).
+- Only chromium project is configured; add `firefox`/`webkit` as needed.
+
 ## Deployment
 
 - Vercel (region: cdg1 Paris)

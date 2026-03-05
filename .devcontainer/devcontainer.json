@@ -1,0 +1,24 @@
+{
+	"name": "Nivalis App Template",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"biomejs.biome",
+				"bradlc.vscode-tailwindcss",
+				"prisma.prisma"
+			],
+			"settings": {
+				"editor.defaultFormatter": "biomejs.biome",
+				"editor.formatOnSave": true
+			}
+		}
+	},
+	"postCreateCommand": "pnpm install",
+	"remoteUser": "node"
+}
