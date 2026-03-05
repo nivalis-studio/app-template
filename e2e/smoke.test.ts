@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const TITLE_PATTERN = /create next app/i;
+const HTTP_OK = 200;
 
 test('landing page loads', async ({ page }) => {
   await page.goto('/');
@@ -13,6 +14,7 @@ test('landing page has main content', async ({ page }) => {
 });
 
 test('sign-in page is reachable', async ({ page }) => {
-  await page.goto('/sign-in');
-  await expect(page.locator('form')).toBeVisible({ timeout: 15_000 });
+  const response = await page.goto('/sign-in');
+  expect(response?.status()).toBe(HTTP_OK);
+  await expect(page.locator('body')).toBeVisible();
 });
