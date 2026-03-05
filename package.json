@@ -17,6 +17,8 @@
 		"test": "turbo test",
 		"knip": "knip",
 		"syncpack:check": "syncpack lint",
+		"jscpd": "jscpd apps/ packages/",
+		"todo:scan": "grep -rn 'TODO\\|FIXME\\|HACK\\|XXX' apps/web/src/ packages/ --include='*.ts' --include='*.tsx' || true",
 		"docs:generate": "typedoc",
 		"prepare": "lefthook install"
 	},
@@ -25,6 +27,7 @@
 		"@commitlint/cli": "catalog:",
 		"@commitlint/config-conventional": "catalog:",
 		"@nivalis/biome-config": "catalog:",
+		"jscpd": "catalog:",
 		"knip": "catalog:",
 		"lefthook": "catalog:",
 		"syncpack": "catalog:",
