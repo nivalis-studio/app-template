@@ -25,4 +25,4 @@ The `yaml` package is a devDependency solely to support `.syncpackrc.mjs`'s dyna
 ## jscpd
 
 ### Generated Files in Ignore List
-The `.jscpd.json` ignore list should include `**/src/prisma/client/**` to avoid false duplication reports from generated Prisma client code. Currently not included — may need to be added if false positives become noisy.
+The `.jscpd.json` ignore list includes `**/src/prisma/client/**` to avoid false duplication reports from generated Prisma client code. This was added in the cross-area-verification feature (commit d579d93).

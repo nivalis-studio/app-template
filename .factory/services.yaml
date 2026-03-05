@@ -6,6 +6,7 @@ commands:
   lint: pnpm lint
   lint:fix: pnpm lint:fix
   typecheck: pnpm ts
+  test:e2e: pnpm test:e2e
 
 services:
   web:
