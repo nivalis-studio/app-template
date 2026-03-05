@@ -72,6 +72,8 @@ catalog:
   '@vercel/otel': 2.1.1
   flags: 4.0.3
   zod: 4.3.6
+  '@changesets/cli': 2.29.8
+  '@changesets/changelog-github': 0.5.2
 
 onlyBuiltDependencies:
   - '@nestjs/core'
