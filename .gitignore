@@ -229,3 +229,6 @@ sketch
 
 ### Prisma ###
 /apps/web/src/prisma/client/
+
+### TypeDoc ###
+/docs/api/

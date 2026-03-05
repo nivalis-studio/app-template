@@ -15,6 +15,7 @@
 		"lint:fix": "turbo lint:fix",
 		"ts": "turbo ts",
 		"test": "turbo test",
+		"docs:generate": "typedoc",
 		"prepare": "lefthook install"
 	},
 	"devDependencies": {
@@ -24,6 +25,8 @@
 		"@nivalis/biome-config": "catalog:",
 		"lefthook": "catalog:",
 		"turbo": "catalog:",
+		"typedoc": "catalog:",
+		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}
 }
