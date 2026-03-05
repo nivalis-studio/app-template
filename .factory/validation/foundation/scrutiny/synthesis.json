@@ -1,129 +1,146 @@
 {
 	"milestone": "foundation",
-	"round": 1,
+	"round": 2,
 	"status": "pass",
 	"validatorsRun": {
 		"test": {
 			"passed": true,
 			"command": "pnpm test",
 			"exitCode": 0,
-			"details": "12 tests passed across 3 files in @nivalis/utils; @nivalis/ai and @nivalis/web had no test files (passWithNoTests)"
+			"details": "22 tests passed in @nivalis/utils (4 files), 73 tests passed in @nivalis/ai (8 files), @nivalis/web had no test files (passWithNoTests). Total: 95 tests."
 		},
 		"typecheck": {
 			"passed": true,
 			"command": "pnpm ts",
 			"exitCode": 0,
-			"details": "All 3 packages passed TypeScript checks (turbo ts)"
+			"details": "All 3 packages passed TypeScript checks via turbo ts (all cache hits)"
 		},
 		"lint": {
 			"passed": true,
 			"command": "pnpm lint",
 			"exitCode": 0,
-			"details": "All 3 packages passed Biome lint checks (49 files total)"
+			"details": "All 3 packages passed Biome lint checks: @nivalis/utils (12 files), @nivalis/ai (21 files), @nivalis/web (60 files). Total: 93 files."
 		}
 	},
 	"reviewsSummary": {
-		"total": 5,
-		"passed": 5,
+		"total": 8,
+		"passed": 8,
 		"failed": 0,
 		"failedFeatures": []
 	},
 	"blockingIssues": [],
 	"nonBlockingIssues": [
 		{
-			"featureId": "setup-shared-packages",
+			"featureId": "agents-md-and-docs",
 			"severity": "non_blocking",
-			"description": "tsconfigs don't extend root (but no root tsconfig exists—matches existing pattern)"
+			"description": "Commit bundled .factory/research/ and .factory/skills/ files alongside AGENTS.md due to .gitignore change — expected system behavior, not a worker error"
 		},
 		{
-			"featureId": "setup-shared-packages",
-			"severity": "suggestion",
-			"description": "'build' and 'ts' scripts are identical ('tsc --noEmit') — slightly redundant"
-		},
-		{
-			"featureId": "setup-vitest",
+			"featureId": "github-templates-codeowners",
 			"severity": "non_blocking",
-			"description": "Catalog alphabetical ordering: vitest inserted before vaul"
+			"description": "Worker skipped pnpm ts in verification — inconsequential for static config files (YAML/Markdown/CODEOWNERS not checked by TypeScript)"
 		},
 		{
-			"featureId": "setup-vitest",
-			"severity": "suggestion",
-			"description": "Unnecessary vitest devDep in root package.json — turbo delegates to workspace packages"
-		},
-		{
-			"featureId": "effect-core-setup",
+			"featureId": "devcontainer",
 			"severity": "non_blocking",
-			"description": ".factory/library/effect-patterns.md documented manual globalValue but code uses official effect/GlobalValue — library updated"
+			"description": "postCreateCommand could be more robust by prepending 'corepack enable' before 'pnpm install' to ensure pnpm availability in container"
 		},
 		{
-			"featureId": "effect-core-setup",
-			"severity": "suggestion",
-			"description": "composeLayers is typed as 'typeof Layer.mergeAll' — direct alias, could benefit from explicit docs"
-		},
-		{
-			"featureId": "setup-sentry",
+			"featureId": "architecture-docs-typedoc",
 			"severity": "non_blocking",
-			"description": "global-error.tsx missing 'reset' prop — users have no recovery path except full page refresh"
+			"description": "skipErrorChecking: true in typedoc.json suppresses TypeScript errors during doc generation; acceptable since pnpm ts handles type-checking separately"
 		},
 		{
-			"featureId": "setup-sentry",
+			"featureId": "architecture-docs-typedoc",
 			"severity": "non_blocking",
-			"description": "sendDefaultPii: true enabled by default — GDPR consideration for sensitive deployments"
+			"description": "docs:generate script not registered in turbo.json — acceptable for on-demand command but should be added if it becomes part of CI"
 		},
 		{
-			"featureId": "setup-sentry",
+			"featureId": "dependabot-branch-protection",
 			"severity": "non_blocking",
-			"description": "tunnelRoute '/monitoring' needs middleware exclusion convention documented"
+			"description": "Branch protection ruleset has no required status checks (only PR review approval) — matches feature requirements but could be strengthened"
 		},
 		{
-			"featureId": "update-env-config",
+			"featureId": "dependabot-branch-protection",
 			"severity": "non_blocking",
-			"description": "Inconsistent empty-string handling: SENTRY_DSN uses '|| undefined' coercion but new optional vars use bare process.env.X"
+			"description": "Only npm ecosystem in dependabot.yml; github-actions ecosystem could be added separately"
+		},
+		{
+			"featureId": "knip-syncpack",
+			"severity": "non_blocking",
+			"description": "pnpm-workspace.yaml catalog entries (knip, syncpack, yaml) appended near end rather than in alphabetical order"
+		},
+		{
+			"featureId": "jscpd-complexity-largefiles-todo",
+			"severity": "non_blocking",
+			"description": "large-file-check in lefthook.yml has false positive when multiple staged files' combined wc -l total exceeds 500 lines — fix: filter out 'total$' line"
+		},
+		{
+			"featureId": "jscpd-complexity-largefiles-todo",
+			"severity": "non_blocking",
+			"description": ".jscpd.json ignore list doesn't include **/src/prisma/client/** for generated Prisma client code — may cause false duplication reports"
+		},
+		{
+			"featureId": "vitest-coverage-isolation-perf",
+			"severity": "non_blocking",
+			"description": "@vitest/coverage-v8 placed out of alphabetical order in pnpm-workspace.yaml catalog (at end instead of with @-scoped packages)"
 		}
 	],
 	"appliedUpdates": [
 		{
 			"target": "library",
-			"description": "Updated .factory/library/effect-patterns.md to reference official 'effect/GlobalValue' module instead of hand-rolled globalThis pattern",
-			"sourceFeature": "effect-core-setup"
+			"description": "Created .factory/library/vitest-config.md documenting Vitest 4 migration changes (poolOptions removed, maxThreads→maxWorkers, pool options now top-level) and current configuration (pool: threads, maxWorkers: 4, verbose reporter, 80% coverage thresholds)",
+			"sourceFeature": "vitest-coverage-isolation-perf"
 		},
 		{
-			"target": "services.yaml",
-			"description": "Updated build command to include required env vars (BETTER_AUTH_SECRET, DATABASE_URL) as placeholders so future workers don't hit build failures",
-			"sourceFeature": "setup-shared-packages"
+			"target": "library",
+			"description": "Created .factory/library/tooling-quirks.md documenting wc -l false positive with total summary line on multi-file input, lefthook YAML quoting requirement for commands with colons, and syncpack's yaml dependency for dynamic catalog reading",
+			"sourceFeature": "jscpd-complexity-largefiles-todo"
 		}
 	],
 	"suggestedGuidanceUpdates": [
 		{
 			"target": "AGENTS.md",
-			"suggestion": "Add testing convention: 'All workspace test scripts use --passWithNoTests flag. Do not remove this flag — it allows packages with no test files to pass in CI.'",
-			"evidence": "packages/utils/package.json, packages/ai/package.json, and apps/web/package.json all use 'vitest run --passWithNoTests'. Undocumented convention discovered during setup-vitest review.",
+			"suggestion": "Add catalog ordering convention to Dependency Management section: '@-scoped packages first (alphabetically), then unscoped packages (alphabetically) in pnpm-workspace.yaml catalog section.'",
+			"evidence": "Features knip-syncpack and vitest-coverage-isolation-perf both placed new catalog entries out of alphabetical order. Three separate reviewer reports flagged this as an undocumented convention.",
 			"isSystemic": true
 		},
 		{
 			"target": "AGENTS.md",
-			"suggestion": "Add Next.js convention: 'Sentry tunnel route is configured at /monitoring. Any future middleware.ts MUST exclude /monitoring from its matcher to avoid blocking Sentry event forwarding.'",
-			"evidence": "apps/web/next.config.ts:46 — tunnelRoute: '/monitoring'. Research doc explicitly warns about this. No middleware exists yet, but will be needed for auth (dashboard-layout feature).",
+			"suggestion": "Document the branch protection ruleset configuration locally: 'Main branch has a GitHub ruleset (id: 13532079) requiring 1 approving review with stale review dismissal. View/modify via gh api repos/nivalis-studio/app-template/rulesets.'",
+			"evidence": "Feature dependabot-branch-protection created a remote-only ruleset with no local documentation. Future maintainers won't know the ruleset exists without checking GitHub API.",
+			"isSystemic": false
+		},
+		{
+			"target": "AGENTS.md",
+			"suggestion": "Clarify relationship between docs/architecture.md (user-facing with Mermaid diagrams) and .factory/library/architecture.md (agent-facing knowledge) to prevent drift.",
+			"evidence": "Feature architecture-docs-typedoc created docs/architecture.md with overlapping content to .factory/library/architecture.md. Both are accurate but independently maintained.",
 			"isSystemic": false
 		},
 		{
 			"target": "skills",
-			"suggestion": "Add TDD exception to infra-worker and service-worker skills: 'For pure scaffolding or pattern-establishment features with no testable logic, implementing source first then writing tests (or skipping tests) is acceptable.'",
-			"evidence": "Both setup-shared-packages (infra-worker) and effect-core-setup (service-worker) workers deviated from TDD mandate. The deviation was justified — scaffolding has no logic to test, and pattern features need the API shape defined before tests can be written.",
-			"isSystemic": true
-		},
-		{
-			"target": "skills",
-			"suggestion": "Consider clarifying service-worker skill scope: it's described as 'Builds Effect.ts services for AI connectors in the @nivalis/ai package' but was used for @nivalis/utils core patterns. Either broaden the scope description or create a separate skill for shared utility patterns.",
-			"evidence": "effect-core-setup feature used service-worker skill for @nivalis/utils work. Worker noted scope mismatch in skillFeedback.",
+			"suggestion": "Add to readiness-worker skill: 'Lefthook YAML commands containing colons need to be quoted to avoid YAML parsing errors.'",
+			"evidence": "Feature jscpd-complexity-largefiles-todo worker reported this as a lesson learned in skillFeedback.suggestedChanges.",
 			"isSystemic": false
 		}
 	],
 	"rejectedObservations": [
 		{
-			"observation": "setup-sentry: environment.md already has Sentry env vars documented",
-			"reason": "already-documented — reviewer confirmed no gap exists"
+			"observation": ".gitignore fix convention — already documented and followed per mission AGENTS.md",
+			"reason": "already-documented"
+		},
+		{
+			"observation": "GPG signing convention — flagged by 3 reviewers (agents-md-and-docs, devcontainer, github-templates-codeowners) but already documented in mission AGENTS.md under 'IMPORTANT: GPG Signing'",
+			"reason": "already-documented"
+		},
+		{
+			"observation": "devcontainer.json uses tab indentation matching Biome defaults",
+			"reason": "already-documented — Biome tab indentation is the project default"
+		},
+		{
+			"observation": "readiness-worker skill correctly followed by multiple workers",
+			"reason": "Not an observation requiring action — confirmation of expected behavior"
 		}
 	],
-	"previousRound": null
+	"previousRound": ".factory/validation/foundation/scrutiny/synthesis.json (round 1)"
 }

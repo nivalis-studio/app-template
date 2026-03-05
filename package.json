@@ -20,6 +20,8 @@
 		"syncpack:check": "syncpack lint",
 		"jscpd": "jscpd apps/ packages/",
 		"todo:scan": "grep -rn 'TODO\\|FIXME\\|HACK\\|XXX' apps/web/src/ packages/ --include='*.ts' --include='*.tsx' || true",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"docs:generate": "typedoc",
 		"prepare": "lefthook install"
 	},
@@ -28,6 +30,7 @@
 		"@commitlint/cli": "catalog:",
 		"@commitlint/config-conventional": "catalog:",
 		"@nivalis/biome-config": "catalog:",
+		"@playwright/test": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"jscpd": "catalog:",
 		"knip": "catalog:",
